@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Packages
-import 'package:hallodoc/pages/home.dart';
+import 'package:hallodoc/pages/home/home.dart';
+import 'package:hallodoc/pages/homepage_wrapper.dart';
 import 'package:hallodoc/pages/splashscreen.dart';
 
 void main() {
@@ -14,18 +15,18 @@ void main() {
 
 // Use green color
 const MaterialColor primarySwatchColor = const MaterialColor(
-  0xFFB60000,
+  0xFF64BE4F,
   const <int, Color>{
-    50: const Color(0xFFB60000),
-    100: const Color(0xFFB60000),
-    200: const Color(0xFFB60000),
-    300: const Color(0xFFB60000),
-    400: const Color(0xFFB60000),
-    500: const Color(0xFFB60000),
-    600: const Color(0xFFB60000),
-    700: const Color(0xFFB60000),
-    800: const Color(0xFFB60000),
-    900: const Color(0xFFB60000),
+    50: const Color(0xFF64BE4F),
+    100: const Color(0xFF64BE4F),
+    200: const Color(0xFF64BE4F),
+    300: const Color(0xFF64BE4F),
+    400: const Color(0xFF64BE4F),
+    500: const Color(0xFF64BE4F),
+    600: const Color(0xFF64BE4F),
+    700: const Color(0xFF64BE4F),
+    800: const Color(0xFF64BE4F),
+    900: const Color(0xFF64BE4F),
   },
 );
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: primarySwatchColor,
         ),
         initialRoute: '/',
-        home: HomePage(),
+        home: HomePageWrapper(),
         routes: <String, WidgetBuilder>{
           // '/home': (BuildContext context) => HomePage(),
         });

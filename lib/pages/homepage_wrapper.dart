@@ -3,22 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 // Project Package
 import 'package:hallodoc/utils/screenutil.dart';
 import 'package:hallodoc/widget/miscellaneous.dart';
+import 'package:hallodoc/pages/home/home.dart';
 import 'package:hallodoc/widget/bottomnav.dart';
 import 'package:hallodoc/pages/booking/booking.dart';
 import 'package:hallodoc/pages/layanan/layanan.dart';
-import 'package:hallodoc/pages/more/more.dart';
 import 'package:hallodoc/pages/profile/profile.dart';
 
-class HomePage extends StatefulWidget {
+class HomePageWrapper extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageWrapperState createState() => _HomePageWrapperState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageWrapperState extends State<HomePageWrapper> {
   PageController _myPage = PageController(initialPage: 0);
   int tabIndex = 0;
 
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.setState(fn);
   }
 
-    Future<bool> _onWillPop() {
+  Future<bool> _onWillPop() {
     return HallodocWidget.hallodocDialog(
             context: context,
             title: 'Keluar dari aplikasi',
@@ -54,9 +53,13 @@ class _HomePageState extends State<HomePage> {
         false;
   }
 
-
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      allowFontScaling: true,
+    )..init(context);
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -64,22 +67,21 @@ class _HomePageState extends State<HomePage> {
           overflow: Overflow.visible,
           children: <Widget>[
             MarBottomAppBar(
-              centerItemText: 'Marbot',
               color: Colors.grey,
               iconSize: ScreenUtil().setSp(55),
               height: ScreenUtil().setHeight(125),
               notchedShape: CircularNotchedRectangle(),
               onTabSelected: _selectedTab,
               items: [
+                MarBottomAppBarItem(iconData: Icons.home, text: 'Home'),
                 MarBottomAppBarItem(
-                    iconData: Icons.home, text: 'Home'),
+                  iconData: Icons.room_service,
+                  text: "Layanan",
+                ),
                 MarBottomAppBarItem(
-                    iconData: Icons.home, text: "Layanan"),
+                    iconData: Icons.calendar_today, text: 'Booking'),
                 MarBottomAppBarItem(
-                    iconData: Icons.home,
-                    text: 'Profile'),
-                MarBottomAppBarItem(
-                    iconData: Icons.home, text: 'More'),
+                    iconData: Icons.account_box, text: 'Profile'),
               ],
             ),
           ],
@@ -87,22 +89,11 @@ class _HomePageState extends State<HomePage> {
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _myPage,
-          onPageChanged: (int) {
-            if (int == 0) {
-              print('Page Changes to Beranda');
-            } else if (int == 1) {
-              print('Page Changes to Manasik');
-            } else if (int == 2) {
-              print('Page Changes to Transaksi');
-            } else if (int == 0) {
-              print('Page Changes to Akun Saya');
-            }
-          },
           children: <Widget>[
+            HomePage(),
             LayananPage(),
             BookingPage(),
             ProfilePage(),
-            MorePage(),
           ],
         ),
       ),
