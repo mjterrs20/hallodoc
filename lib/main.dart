@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 // Packages
 import 'package:hallodoc/pages/home/home.dart';
 import 'package:hallodoc/pages/homepage_wrapper.dart';
+import 'package:hallodoc/pages/register/register.dart';
 import 'package:hallodoc/pages/splashscreen.dart';
 
 void main() {
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         home: HomePageWrapper(),
         routes: <String, WidgetBuilder>{
-          // '/home': (BuildContext context) => HomePage(),
+          '/home': (BuildContext context) => HomePage(),
+          '/register': (BuildContext context) => RegisterPage(),
         });
   }
 }
