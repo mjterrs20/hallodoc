@@ -30,6 +30,21 @@ class PreferenceUtil {
     prefs.setString('email', _email);
     return _email;
   }
+  getPhone() async {
+    String _phone;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _phone = (prefs.getString('phone'));
+    prefs.setString('phone', _phone);
+    return _phone;
+  }
+
+  getSex() async {
+    String _sex;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _sex = (prefs.getString('sex'));
+    prefs.setString('sex', _sex);
+    return _sex;
+  }
 
   getToken() async {
     String _token;
@@ -37,6 +52,14 @@ class PreferenceUtil {
     _token = (prefs.getString('token'));
     prefs.setString('token', _token);
     return _token;
+  }
+
+  getRole() async {
+    String _role;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _role = (prefs.getString('role'));
+    prefs.setString('role', _role);
+    return _role;
   }
 
   // Mengambil variable general (untuk passing parameter)

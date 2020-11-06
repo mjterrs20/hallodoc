@@ -14,16 +14,32 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword = true, _obscureCPassword = true;
+  String jenisKelamin = '';
+  int selectedRadioJenKel;
+  bool _obscurePassword = true,
+      _obscureCPassword = true,
+      checkJenisKelamin = true;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cPasswordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+  }
+
+  setSelectedJenKel(int val) {
+    setState(() {
+      selectedRadioJenKel = val;
+      if (val == 1) {
+        jenisKelamin = "laki-laki";
+      } else {
+        jenisKelamin = "perempuan";
+      }
+    });
   }
 
   outFocus() {
@@ -42,6 +58,9 @@ class _RegisterPageState extends State<RegisterPage> {
     appData.saveVariable("name", nameController.text);
     appData.saveVariable("email", emailController.text);
     appData.saveVariable("token", token);
+    appData.saveVariable("phone", phoneController.text);
+    appData.saveVariable("role", "patient");
+    appData.saveVariable("sex", jenisKelamin);
   }
 
   void createAccount() async {
@@ -53,7 +72,9 @@ class _RegisterPageState extends State<RegisterPage> {
         "name": nameController.text,
         "email": emailController.text,
         "password": passwordController.text,
-        "c_password": cPasswordController.text
+        "c_password": cPasswordController.text,
+        "phone": phoneController.text,
+        "sex": jenisKelamin,
       });
       print(response);
       var registerData = ModelRegister.fromJson(response.data);
@@ -78,12 +99,12 @@ class _RegisterPageState extends State<RegisterPage> {
             ]);
       }
     } catch (e) {
-      // ketika error
+      // When Error
       Navigator.of(context).pop();
       HallodocWidget.hallodocDialog(
           context: context,
           title: 'Gagal',
-          content: "Maaf Terjadi Kesalahan",
+          content: "Email Sudah Terpakai",
           buttons: <Widget>[
             HallodocWidget.hallodocButton(
                 buttonText: 'Ok',
@@ -98,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rgister")),
+      appBar: AppBar(title: Text("Register")),
       body: GestureDetector(
         onTap: () {
           focusScope();
@@ -157,6 +178,28 @@ class _RegisterPageState extends State<RegisterPage> {
                             return null;
                         },
                       ),
+                    ),
+                    // nomor hp
+                    Padding(
+                      padding: EdgeInsets.only(left: 15, bottom: 10, right: 15),
+                      child: TextFormField(
+                          controller: phoneController,
+                          keyboardType: TextInputType.phone,
+                          decoration: new InputDecoration(
+                              hintStyle: new TextStyle(
+                                  color: Colors.grey[500],
+                                  fontFamily: 'Comfortaa',
+                                  fontSize: 16.0),
+                              hintText: "08XXX",
+                              fillColor: Colors.white70),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Tidak boleh kosong';
+                            } else if (value.length < 10 || value.length > 12) {
+                              return 'Nomor Hp salah';
+                            }
+                            return null;
+                          }),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
@@ -228,6 +271,52 @@ class _RegisterPageState extends State<RegisterPage> {
                         obscureText: _obscureCPassword,
                       ),
                     ),
+                    // sex
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10, right: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              new Radio(
+                                value: 0,
+                                activeColor: Colors.red,
+                                groupValue: selectedRadioJenKel,
+                                onChanged: (val) {
+                                  setSelectedJenKel(val);
+                                },
+                              ),
+                              new Text(
+                                'Perempuan',
+                                style: new TextStyle(fontSize: 16.0),
+                              ),
+                              new Radio(
+                                value: 1,
+                                activeColor: Colors.red,
+                                groupValue: selectedRadioJenKel,
+                                onChanged: (val) {
+                                  setSelectedJenKel(val);
+                                },
+                              ),
+                              new Text(
+                                'Laki-laki',
+                                style: new TextStyle(fontSize: 16.0),
+                              ),
+                            ],
+                          ),
+                          checkJenisKelamin == true
+                              ? Container()
+                              : Padding(
+                                  padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                  child: Text("Harus diisi",
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12)),
+                                ),
+                        ],
+                      ),
+                    ),
                     // button create account
                     Padding(
                       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -244,14 +333,20 @@ class _RegisterPageState extends State<RegisterPage> {
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 _formKey.currentState.save();
-                                if (passwordController.text ==
-                                    cPasswordController.text) {
-                                  // create
-                                  outFocus();
-                                  createAccount();
+                                if (selectedRadioJenKel != null) {
+                                  if (passwordController.text ==
+                                      cPasswordController.text) {
+                                    // create
+                                    outFocus();
+                                    createAccount();
+                                  }
+                                } else {
+                                  setState(() {
+                                    checkJenisKelamin = false;
+                                  });
                                 }
                               } else {
-                                // jika masih ada data yang kosong
+                                // data null
                               }
                             },
                             shape: new RoundedRectangleBorder(
