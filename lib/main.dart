@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hallodoc/ui/screens/service/servicePage.dart';
+import 'package:intl/date_symbol_data_local.dart'; 
 import 'package:flutter/services.dart';
 
 // Packages
@@ -33,6 +35,8 @@ const MaterialColor primarySwatchColor = const MaterialColor(
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // inisialisasi untuk date formating
+    initializeDateFormatting('id_ID', null);
     return MaterialApp(
         title: 'Hallodoc',
         debugShowCheckedModeBanner: false,
