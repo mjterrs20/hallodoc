@@ -63,4 +63,28 @@ class Data {
     data['type'] = this.type;
     return data;
   }
+
+  bool isNews() {
+    return this.category == "Berita";
+  }
+
+  bool isPromotion() {
+    return this.category == "Promo";
+  }
+
+  bool isFacility() {
+    return this.category == "Fasilitas";
+  }
+
+  bool isPartner() {
+    return this.category == "Partner";
+  }
+
+  bool isEvent() {
+    return this.category == "Event";
+  }
+
+  bool isServices() {
+    return this.category == "Layanan";
+  }
 }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hallodoc/models/content.dart';
-import 'package:hallodoc/ui/widgets/content/serviceItem.dart';
-import 'package:hallodoc/ui/widgets/content/serviceItemNews.dart';
 
 class ServiceList extends StatefulWidget {
 
   final Content content;
   final bool canScroll;
   final Axis scrollDirection;
+  final Function item;
 
-  ServiceList({@required this.content, @required this.canScroll, @required this.scrollDirection});
+  ServiceList({
+    @required this.content,
+    @required this.canScroll,
+    @required this.scrollDirection,
+    @required this.item
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -25,12 +29,10 @@ class _ServiceState extends State<ServiceList> {
       shrinkWrap: true,
       physics: widget.canScroll ? ScrollPhysics() : NeverScrollableScrollPhysics(),
       scrollDirection: widget.scrollDirection,
-      itemCount: widget.content.data.length,
+      itemCount: widget.content.data != null ? widget.content.data.length : 0,
       itemBuilder: (context, index) {
         Data data = widget.content.data[index];
-        return widget.scrollDirection == Axis.horizontal 
-                  ? ServiceItem(data: data) 
-                  : ServiceItemNews(data: data);
+        return widget.item(context, data);
       }, 
     );
   }
