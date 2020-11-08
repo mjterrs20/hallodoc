@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hallodoc/resources/content/contentRepository.dart';
+import 'package:hallodoc/models/content.dart';
+import 'package:hallodoc/providers/content/contentProvider.dart';
+import 'package:hallodoc/ui/widgets/content/serviceItem.dart';
+import 'package:hallodoc/ui/widgets/content/serviceItemNews.dart';
 import 'package:hallodoc/ui/widgets/content/serviceList.dart';
+import 'package:provider/provider.dart';
+
+
+class Layanans extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context)=> ContentProvider(),
+      child: LayananPage(),
+    );
+  }
+}
 
 class LayananPage extends StatefulWidget {
   @override
@@ -23,44 +38,53 @@ class _LayananState extends State<LayananPage> {
     super.dispose();
   }
 
-  Widget searchResult() {
-    return FutureBuilder(
-      future: ContentRepository().getContent(filter: "/search?query=${_controller.text}"),
-      builder: (context, snapshot) {
-        print(snapshot);
-        if(!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return  Container(
-          padding: EdgeInsets.only(left: 15, right: 10),
-          child: ServiceList(
-            canScroll: false,
-            scrollDirection: Axis.vertical,
-            content: snapshot.data,
-          )
-        );
-      },
-    );
+  @override
+  void initState() { 
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ContentProvider>(context, listen: false).fetchContent(query: null);
+    });
   }
 
   Widget body() {
     return ListView(
       children: [
         divider("Fasilitas & Layanan Terkini"),
-        futureBuilder(
-          canScroll: true,
-          heigth: 260,
-          scrollDirection: Axis.horizontal,
-          filter: "?category[]=fasilitas&category[]=layanan"
+        Consumer<ContentProvider>(
+          builder: (context, data, child) {
+            if(!data.isExist()) {
+              return Container();
+            }
+            Content contentLayanan = Content(data: data.getFasilitas(data.getContent().data));
+            return Container(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              height: 260,
+              child: ServiceList(
+                canScroll: true,
+                scrollDirection: Axis.horizontal,
+                content: contentLayanan,
+                item: ServiceItem().itemSmall,
+              )
+            );
+          },
         ),
         divider("Event & Promo"),
-        futureBuilder(
-          canScroll: false,
-          heigth: ScreenUtil().screenHeight,
-          scrollDirection: Axis.vertical,
-          filter: "?category[]=event&category[]=promo"
+        Consumer<ContentProvider>(
+          builder: (context, data, child) {
+            if(!data.isExist()) {
+              return Container();
+            }
+            Content contentPromo = Content(data: data.getPromoAndEvent(data.getContent().data));
+            return Container(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              child: ServiceList(
+                canScroll: false,
+                scrollDirection: Axis.vertical,
+                content: contentPromo,
+                item: ServiceItemNews().view
+              )
+            );
+          },
         ),
       ],
     );
@@ -83,7 +107,8 @@ class _LayananState extends State<LayananPage> {
           } else {
             isSearching = false;
           }
-          FocusScope.of(context).unfocus();
+          Provider.of<ContentProvider>(context, listen: false).fetchContent(query: "/search?query=${_controller.text}");
+          textFieldFocus.unfocus();
           setState(() {});
         },
         textInputAction: TextInputAction.done,
@@ -91,7 +116,7 @@ class _LayananState extends State<LayananPage> {
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search),
           hintText: 'Search',
-          isDense: true,
+          // isDense: true,
           contentPadding: EdgeInsets.symmetric(vertical: 1.0),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(30.0)),
@@ -126,29 +151,6 @@ class _LayananState extends State<LayananPage> {
     );
   }
 
-  Widget futureBuilder({@required bool canScroll,  @required Axis scrollDirection, @required double heigth, String filter}) {
-    return FutureBuilder(
-      future: ContentRepository().getContent(filter: filter),
-      builder: (context, snapshot) {
-        print(snapshot);
-        if(!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return  Container(
-          height: scrollDirection == Axis.horizontal ? heigth : null,
-          padding: EdgeInsets.only(left: 15, right: 10),
-          child: ServiceList(
-            canScroll: canScroll,
-            scrollDirection: scrollDirection,
-            content: snapshot.data,
-          )
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(750, 1334), allowFontScaling: true);
@@ -168,11 +170,53 @@ class _LayananState extends State<LayananPage> {
               ),
             ),
             searchField(),
+            Provider.of<ContentProvider>(context).isLoading() ?
+            Container(
+              margin: EdgeInsets.only(top: 100),
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white, strokeWidth: 2,
+                )
+              )
+            ) :
             Expanded(
               child: isSearching ? 
                 ListView(
                   children: [
-                    searchResult()
+                    Consumer<ContentProvider>(
+                      builder: (context, data, child) {
+                        if(data.isLoading()) {
+                          return Container(
+                            height: ScreenUtil().screenHeight * .5,
+                            margin: EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.white, strokeWidth: 2,
+                              )
+                            )
+                          );
+                        }
+
+                        if(!data.isExist()) {
+                          return Container(
+                            height: ScreenUtil().screenHeight * .5,
+                            margin: EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Text("Tidak ada data yang cocok"),
+                            )
+                          );
+                        }
+                        return Container(
+                          padding: EdgeInsets.only(left: 15, right: 15),
+                          child: ServiceList(
+                            canScroll: false,
+                            scrollDirection: Axis.vertical,
+                            content: data.getContent(),
+                            item: ServiceItemNews().view,
+                          )
+                        );
+                      },
+                    ),
                   ],
                 ) : body(),
             )

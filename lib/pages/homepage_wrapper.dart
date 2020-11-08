@@ -2,14 +2,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/screenutil.dart';
+import 'package:hallodoc/ui/screens/home/homePage.dart';
+import 'package:hallodoc/ui/screens/service/servicePage.dart';
 
 // Project Package
-import 'package:hallodoc/utils/screenutil.dart';
 import 'package:hallodoc/widget/miscellaneous.dart';
-import 'package:hallodoc/pages/home/home.dart';
 import 'package:hallodoc/widget/bottomnav.dart';
 import 'package:hallodoc/pages/booking/booking.dart';
-import 'package:hallodoc/pages/layanan/layanan.dart';
 import 'package:hallodoc/pages/profile/profile.dart';
 
 class HomePageWrapper extends StatefulWidget {
@@ -18,15 +18,6 @@ class HomePageWrapper extends StatefulWidget {
 }
 
 class _HomePageWrapperState extends State<HomePageWrapper> {
-  PageController _myPage = PageController(initialPage: 0);
-  int tabIndex = 0;
-
-  void _selectedTab(tabIndex) {
-    setState(() {
-      _myPage.animateToPage(tabIndex,
-          curve: Curves.easeInOutSine, duration: Duration(milliseconds: 500));
-    });
-  }
 
   @override
   void setState(fn) {
@@ -55,48 +46,42 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      allowFontScaling: true,
-    )..init(context);
+    ScreenUtil.init(context, designSize: Size(750, 1334), allowFontScaling: true);
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: Scaffold(
-        bottomNavigationBar: Stack(
-          overflow: Overflow.visible,
-          children: <Widget>[
-            MarBottomAppBar(
-              color: Colors.grey,
-              iconSize: ScreenUtil().setSp(55),
-              height: ScreenUtil().setHeight(125),
-              notchedShape: CircularNotchedRectangle(),
-              onTabSelected: _selectedTab,
-              items: [
-                MarBottomAppBarItem(iconData: Icons.home, text: 'Home'),
-                MarBottomAppBarItem(
-                  iconData: Icons.room_service,
-                  text: "Layanan",
-                ),
-                MarBottomAppBarItem(
-                    iconData: Icons.calendar_today, text: 'Booking'),
-                MarBottomAppBarItem(
-                    iconData: Icons.account_box, text: 'Profile'),
-              ],
+      child: SafeArea(
+        child: CupertinoTabScaffold(
+          tabBar: CupertinoTabBar(items: [
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.home),
+              label: 'Beranda'
             ),
-          ],
-        ),
-        body: PageView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _myPage,
-          children: <Widget>[
-            HomePage(),
-            LayananPage(),
-            BookingPage(),
-            ProfilePage(),
-          ],
-        ),
-      ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.building_2_fill),
+              label: 'Layanan'
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.calendar),
+              label: 'Booking'
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.profile_circled),
+              label: 'Akun'
+            ),
+          ]),
+          tabBuilder: (context, index) {
+            if (index == 0) {
+              return HomePage();
+            } else if (index == 1) {
+              return Layanans();
+            } else if (index == 2) {
+              return BookingPage();
+            } else {
+              return ProfilePage();
+            }
+          },
+        )
+      )
     );
   }
 }

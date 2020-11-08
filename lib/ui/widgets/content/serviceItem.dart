@@ -3,21 +3,8 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:hallodoc/models/content.dart';
 import 'package:hallodoc/ui/screens/service/detailServicePage.dart';
 
-class ServiceItem extends StatefulWidget {
-
-  final Data data;
-
-  ServiceItem({@required this.data});
-
-  @override
-  State<StatefulWidget> createState() {
-    return _ServiceItemState();
-  }
-}
-
-class _ServiceItemState extends State<ServiceItem> {
-
-  Widget itemSmall(Data data) {
+class ServiceItem {
+  Widget itemSmall(context, Data data) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
@@ -65,10 +52,5 @@ class _ServiceItemState extends State<ServiceItem> {
         ),
       )
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return itemSmall(widget.data);
   }
 }

@@ -2,20 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hallodoc/models/content.dart';
 import 'package:hallodoc/ui/screens/service/detailServicePage.dart';
-import 'package:intl/intl.dart';
 
-class ServiceItemNews extends StatelessWidget {
-
-  final Data data;
-  ServiceItemNews({this.data});
-
-  @override
-  Widget build(BuildContext context) {
-
-    var formatter = new DateFormat('dd MMMM yyyy');
-
+class ServiceItemNews {
+  Widget view(context,Data data) {
     return Container(
-      width: 200,
+      width: 370,
       child: GestureDetector(
         onTap: () {
           if(data.type == "content") {  
@@ -77,14 +68,25 @@ class ServiceItemNews extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10, bottom: 15, right: 10),
-                child: Text(
-                  data.date != null ? formatter.format(DateTime.parse(data.date)) :"",
-                  style: TextStyle(
-                    fontSize: ScreenUtil().setSp(23),
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                ),
+                child: RichText(
+                  text: TextSpan(
+                    text: data.type != "doctor" ? data.desc.length > 100 ? data.desc.substring(0, 80) : data.desc : "",
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(23),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: ' | Lihat Selengkapnya',
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(23),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      )
+                    ]
+                  )
+                )
               )
             ],
           ),
