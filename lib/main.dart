@@ -17,18 +17,18 @@ void main() {
 
 // Use green color
 const MaterialColor primarySwatchColor = const MaterialColor(
-  0xFF64BE4F,
+  0xFFFFFFFF,
   const <int, Color>{
-    50: const Color(0xFF64BE4F),
-    100: const Color(0xFF64BE4F),
-    200: const Color(0xFF64BE4F),
-    300: const Color(0xFF64BE4F),
-    400: const Color(0xFF64BE4F),
-    500: const Color(0xFF64BE4F),
-    600: const Color(0xFF64BE4F),
-    700: const Color(0xFF64BE4F),
-    800: const Color(0xFF64BE4F),
-    900: const Color(0xFF64BE4F),
+    50: const Color(0xFFFFFFFF),
+    100: const Color(0xFFFFFFFF),
+    200: const Color(0xFFFFFFFF),
+    300: const Color(0xFFFFFFFF),
+    400: const Color(0xFFFFFFFF),
+    500: const Color(0xFFFFFFFF),
+    600: const Color(0xFFFFFFFF),
+    700: const Color(0xFFFFFFFF),
+    800: const Color(0xFFFFFFFF),
+    900: const Color(0xFFFFFFFF),
   },
 );
 
@@ -43,8 +43,27 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           //handle copy paste texfield mazlines:null
           buttonTheme: ButtonThemeData(minWidth: 10),
-          fontFamily: 'Comfortaa',
-          primarySwatch: primarySwatchColor,
+          fontFamily: 'Poppins',
+          primaryColor: Colors.lightBlue[800],
+          accentColor: Colors.cyan[600],
+          appBarTheme: AppBarTheme(
+            elevation: 0.0,
+            iconTheme: IconThemeData(
+              color: Colors.black
+            ),
+            color: Color(0xFFFFFFFF),
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                color: Colors.black,
+                fontSize: 19.0,
+              )
+            ),
+          ),
+          textTheme: TextTheme(
+            headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            bodyText2: TextStyle(fontSize: 14.0),
+          ),
         ),
         initialRoute: '/',
         home: HomePageWrapper(),

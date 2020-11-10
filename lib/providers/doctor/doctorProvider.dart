@@ -27,7 +27,7 @@ class DoctorProvider extends BaseProvider {
     await DoctorRepository().getDoctor(id: id).then((data) {
       setLoading(false);
       if (data.statusCode == 200) {
-        setDoctors(Doctors.fromJson(json.decode(data.data)));
+        setDoctor(Data.fromJson(json.decode(data.data)['data']));
       } else {
         Map<String, dynamic> result = json.decode(data.data);
         setMessage(result.toString());
