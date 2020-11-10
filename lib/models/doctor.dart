@@ -35,6 +35,8 @@ class Data {
   int userId;
   String type;
   Spesialist spesialist;
+  List<Schedules> schedules;
+
 
   Data(
       {this.id,
@@ -46,7 +48,8 @@ class Data {
       this.spesialistId,
       this.userId,
       this.type,
-      this.spesialist});
+      this.spesialist,
+      this.schedules});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -61,6 +64,12 @@ class Data {
     spesialist = json['spesialist'] != null
         ? new Spesialist.fromJson(json['spesialist'])
         : null;
+    if (json['schedules'] != null) {
+      schedules = new List<Schedules>();
+      json['schedules'].forEach((v) {
+        schedules.add(new Schedules.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +111,67 @@ class Spesialist {
     data['slug'] = this.slug;
     data['name'] = this.name;
     data['description'] = this.description;
+    return data;
+  }
+}
+
+
+class Schedules {
+  int id;
+  int hospitalId;
+  String day;
+  String startAt;
+  String endAt;
+  Hospital hospital;
+
+  Schedules(
+      {this.id,
+      this.hospitalId,
+      this.day,
+      this.startAt,
+      this.endAt,
+      this.hospital});
+
+  Schedules.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    hospitalId = json['hospital_id'];
+    day = json['day'];
+    startAt = json['start_at'];
+    endAt = json['end_at'];
+    hospital = json['hospital'] != null
+        ? new Hospital.fromJson(json['hospital'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['hospital_id'] = this.hospitalId;
+    data['day'] = this.day;
+    data['start_at'] = this.startAt;
+    data['end_at'] = this.endAt;
+    if (this.hospital != null) {
+      data['hospital'] = this.hospital.toJson();
+    }
+    return data;
+  }
+}
+
+class Hospital {
+  int id;
+  String name;
+
+  Hospital({this.id, this.name});
+
+  Hospital.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
     return data;
   }
 }

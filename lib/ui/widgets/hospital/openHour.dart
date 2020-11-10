@@ -24,7 +24,7 @@ class OpenHourView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 120,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

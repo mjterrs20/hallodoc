@@ -53,7 +53,7 @@ class DoctorCardItem extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 10, top: 20, right: 10),
+                padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
                 child: Text(
                   data.spesialist.name,
                   maxLines: 2,

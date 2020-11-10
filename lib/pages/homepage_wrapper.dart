@@ -1,15 +1,13 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:hallodoc/ui/screens/doctor/doctors.dart';
 import 'package:hallodoc/ui/screens/home/homePage.dart';
 import 'package:hallodoc/ui/screens/service/servicePage.dart';
 
 // Project Package
 import 'package:hallodoc/widget/miscellaneous.dart';
-import 'package:hallodoc/widget/bottomnav.dart';
-import 'package:hallodoc/pages/booking/booking.dart';
 import 'package:hallodoc/pages/profile/profile.dart';
 
 class HomePageWrapper extends StatefulWidget {
@@ -75,7 +73,7 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
             } else if (index == 1) {
               return Layanans();
             } else if (index == 2) {
-              return BookingPage();
+              return DoctorsPage();
             } else {
               return ProfilePage();
             }

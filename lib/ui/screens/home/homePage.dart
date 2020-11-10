@@ -379,7 +379,7 @@ class _HomeState extends State<HomePageStateful> {
                                           return Container();
                                         }
                                         return Container(
-                                          height: 290,
+                                          height: 320,
                                           child: futureDoctorView(data.getDoctors())
                                         );
                                       },
@@ -400,7 +400,7 @@ class _HomeState extends State<HomePageStateful> {
                                           return Container();
                                         }
                                         return Container(
-                                          height: 290,
+                                          height: 310,
                                           child: futureNewsView(data.getContent())
                                         );
                                       },
@@ -418,10 +418,10 @@ class _HomeState extends State<HomePageStateful> {
                                     ),
                                     Consumer<HospitalProvider>(
                                       builder: (context, data, child) {
-                                        Hospital hospital = data.getHospitals().data[0];
                                         if(!data.hospitalsExist()) {
                                           return Container();
                                         }
+                                        Hospital hospital = data.getHospitals().data[0];
                                         return Container(
                                           height: 230,
                                           child: Column(
