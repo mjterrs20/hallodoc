@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hallodoc/models/content.dart';
 import 'package:hallodoc/models/hospital.dart';
+import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/content/contentProvider.dart';
 import 'package:hallodoc/providers/doctor/doctorProvider.dart';
 import 'package:hallodoc/providers/hospital/hospitalProvider.dart';
@@ -30,6 +31,9 @@ class HomePage extends StatelessWidget {
         ),
         ChangeNotifierProvider<HospitalProvider>(
           create: (_) => HospitalProvider()
+        ),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider()
         ),
       ],
       child: HomePageStateful(),
