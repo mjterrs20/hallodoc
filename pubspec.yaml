@@ -22,6 +22,8 @@ dependencies:
   intl:
   url_launcher:
   shared_preferences:
+  sqflite:
+
 
   image_picker:
   path_provider:

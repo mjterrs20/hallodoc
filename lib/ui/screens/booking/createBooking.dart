@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:hallodoc/models/doctor.dart';
+import 'package:hallodoc/models/infoPatient.dart';
 import 'package:hallodoc/providers/booking/bookingProvider.dart';
+import 'package:hallodoc/providers/booking/infoPatientProvider.dart';
+import 'package:hallodoc/ui/screens/booking/infoPatientList.dart';
 import 'package:hallodoc/ui/widgets/views/circleImage.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +15,15 @@ class CreateBookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => BookingProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => BookingProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => InfoPatientProvider(),
+        )
+      ],
       child: _BookingPageFul(doctor: doctor),
     );
   }
@@ -33,6 +43,25 @@ class _State extends State<_BookingPageFul> {
 
   FocusNode _textFieldFocus = FocusNode();
   TextEditingController _controller = TextEditingController();
+
+  InfoPatient selected;
+
+  @override
+  void initState() { 
+    super.initState();
+    getLocalData();
+  }
+
+  getLocalData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<InfoPatientProvider>(context).checkSelected();
+      Future.delayed(Duration(microseconds: 100) ,() {
+        Provider.of<InfoPatientProvider>(context).getInfoPatient(
+          Provider.of<InfoPatientProvider>(context).getSelected() ?? 1
+        );
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +170,18 @@ class _State extends State<_BookingPageFul> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: (){},
+                            onTap: () async {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InfoPatientPage()
+                                )
+                              );
+                              print(result);
+                              if(result != null) {
+                                getLocalData();
+                              }
+                            },
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
@@ -154,9 +194,30 @@ class _State extends State<_BookingPageFul> {
                           )
                         ],
                       ),
-                      Text("Nama: Udin"),
-                      Text("Jenis Kelamin: Laki-laki"),
-                      Text("Status: Saya sendiri"),
+                      Consumer<InfoPatientProvider>(
+                        builder: (context, data, _) {
+                          if(data.getSelected() != null && data.getInfoPatients() != null) {
+                            selected = data.getInfoPatients()[0];
+                          }
+                          if(data.getSelected() == null || data.getInfoPatients() != null &&  data.getInfoPatients().isEmpty) {
+                            return Text("Harap pilih pasien");
+                          }
+                          if(selected == null) {
+                            return CircularProgressIndicator(
+                              backgroundColor: Colors.blue,
+                              strokeWidth: 2,
+                            );
+                          }
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Nama: ${selected.name}"),
+                              Text("Jenis Kelamin: ${selected.sex == 1 ?'Laki-laki' : 'Perempuan'}"),
+                              Text("Status: ${selected.status}"),
+                            ],
+                          );
+                        }
+                      ),
                     ],
                   ),
                 ),
