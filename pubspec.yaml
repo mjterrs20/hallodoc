@@ -45,7 +45,7 @@ flutter:
   assets:
     - assets/images/home_ilustration.png
     - assets/icons/maki_doctor-11.png
-  #   - assets/images/banner_placeholder.png
+    - assets/key/kp-likvcc-55d8760cde3e.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
