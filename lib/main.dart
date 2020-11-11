@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hallodoc/ui/screens/service/servicePage.dart';
 import 'package:intl/date_symbol_data_local.dart'; 
 import 'package:flutter/services.dart';
 
 // Packages
-import 'package:hallodoc/pages/home/home.dart';
 import 'package:hallodoc/pages/homepage_wrapper.dart';
-import 'package:hallodoc/pages/splashscreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,7 +63,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         initialRoute: '/',
-        home: HomePageWrapper(),
+        home: HomeWrapper(),
         routes: <String, WidgetBuilder>{
           // '/home': (BuildContext context) => HomePage(),
         });

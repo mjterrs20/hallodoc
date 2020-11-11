@@ -7,7 +7,7 @@ class BookingProvider extends BaseProvider {
 
   bool _created = false;
 
-  Future<void> fetchDoctor({Map<String, dynamic> data}) async {
+  Future<void> saveBooking({Map<String, dynamic> data}) async {
     setLoading(true);
     await BookingRepository().saveBooking(data).then((response) {
       setLoading(false);
