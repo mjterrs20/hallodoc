@@ -89,6 +89,7 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _myPage,
+          pageSnapping: true,
           children: <Widget>[
             HomePage(),
             LayananPage(),

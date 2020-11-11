@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: primarySwatchColor,
         ),
         initialRoute: '/',
-        home: HomePageWrapper(),
+        home: SplashScreenPage(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => HomePage(),
           '/register': (BuildContext context) => RegisterPage(),

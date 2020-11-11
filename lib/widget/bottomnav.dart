@@ -56,6 +56,7 @@ class MarBottomAppBarState extends State<MarBottomAppBar> {
     )..init(context);
     
     List<Widget> items = List.generate(widget.items.length, (int index) {
+      print(index.toString());
       return _buildTabItem(
         item: widget.items[index],
         index: index,
