@@ -1,8 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hallodoc/models/doctor.dart';
+import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/doctor/doctorProvider.dart';
 import 'package:hallodoc/ui/screens/booking/createBooking.dart';
+import 'package:hallodoc/ui/widgets/auth/login.dart';
+import 'package:hallodoc/ui/widgets/auth/register.dart';
 import 'package:provider/provider.dart';
 
 class DoctorPage extends StatelessWidget {
@@ -12,8 +16,15 @@ class DoctorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => DoctorProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<DoctorProvider>(
+          create: (context) => DoctorProvider(),
+        ),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => AuthProvider(),
+        ),
+      ],
       child: _DoctorPageFul(id: id),
     );
   }
@@ -36,6 +47,7 @@ class _DoctorState extends State<_DoctorPageFul> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DoctorProvider>(context).fetchDoctor(id: widget.id);
+      Provider.of<AuthProvider>(context).checkLogin();
     });
   }
 
@@ -93,6 +105,22 @@ class _DoctorState extends State<_DoctorPageFul> {
     );
   }
 
+  void callback(value, doctor) {
+    if(value == "logedin") {
+      Navigator.pop(context);
+      Future.delayed(Duration(milliseconds: 300), 
+      () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateBookingPage(
+              doctor: doctor
+            ),
+          )
+        )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context,
@@ -108,27 +136,55 @@ class _DoctorState extends State<_DoctorPageFul> {
                         left: 30, right: 30, top: 10, bottom: 10),
                     child: Consumer<DoctorProvider>(
                       builder: (context, data, _) {
-                        return FlatButton(
-                          textColor: Colors.white,
-                          child: Text('Buat Janji'),
-                          onPressed: () {
-                            if (data.doctorExist()) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CreateBookingPage(
-                                      doctor: data.getDoctor(),
+                        return Consumer<AuthProvider>(
+                          builder: (context, auth, _) {
+                            return FlatButton(
+                              textColor: Colors.white,
+                              child: Text('Buat Janji'),
+                              onPressed: () {
+                                print(auth.isLogin());
+                                if(!auth.isLogin()) {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
                                     ),
-                                  ));
-                            }
-                          },
-                          color: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.blue,
-                                  width: 1,
-                                  style: BorderStyle.solid),
-                              borderRadius: BorderRadius.circular(8)),
+                                    isScrollControlled: true,
+                                    builder: (context) => Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15),
+                                          child: BottomSheetLogin(
+                                            callback: callback,
+                                            doctor: data.getDoctor(),
+                                          ),
+                                        )
+                                      ),
+                                    );
+                                } 
+                                if (auth.isLogin() && data.doctorExist()){
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CreateBookingPage(
+                                        doctor: data.getDoctor(),
+                                      ),
+                                    )
+                                  );
+                                } else {
+                                  
+                                }
+                              },
+                              color: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: Colors.blue,
+                                      width: 1,
+                                      style: BorderStyle.solid),
+                                  borderRadius: BorderRadius.circular(8)),
+                            );
+                          }
                         );
                       },
                     )),
@@ -261,5 +317,102 @@ class _DoctorState extends State<_DoctorPageFul> {
                 ],
               );
             })));
+  }
+}
+
+class BottomSheetLogin extends StatefulWidget {
+
+  final Function callback;
+  final Data doctor;
+
+  BottomSheetLogin({@required this.callback, this.doctor});
+  
+  @override
+  State<StatefulWidget> createState() {
+    return _BottomSheeState();
+  }
+}
+class _BottomSheeState extends State<BottomSheetLogin> {
+
+  
+
+  bool buildLogin = true;
+
+  void changeUi(value) {
+    buildLogin = value;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<AuthProvider>(
+      create: (context) => AuthProvider(),
+      child: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          alignment: Alignment.bottomCenter,
+          child: Wrap(
+            children: <Widget>[
+              Consumer<AuthProvider>(
+                builder:(context, data, _) {
+                  if(data.isLogin()){
+                    widget.callback('logedin', widget.doctor);
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: 10),
+                          width: 40.0,
+                          height: 3,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          'Masuk',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      buildLogin ? 
+                          LoginView() : 
+                          RegisterView(),
+                      Center(
+                        child: RichText(
+                            text: TextSpan(
+                                text: buildLogin ?'Belum punya akun?' : "Sudah punya akun?",
+                                style: TextStyle(color: Colors.black, fontSize: 18),
+                                children: <TextSpan>[
+                              TextSpan(
+                                  text: buildLogin ? ' Daftar' : " Masuk",
+                                  style:
+                                      TextStyle(color: Colors.blueAccent, fontSize: 18),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      print(buildLogin);
+                                      buildLogin ? changeUi(false) : changeUi(true);
+                                    })
+                            ])),
+                      )
+                    ],
+                  );
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

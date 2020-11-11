@@ -71,6 +71,14 @@ class PreferenceUtil {
   }
 
   // Mengambil variable general (untuk passing parameter)
+  getIntVariable(String namaVariable) async {
+    int _valueVariable;
+    SharedPreferences prefs = await SharedPreferences.getInstance(); 
+    _valueVariable = (prefs.getInt(namaVariable));
+    return _valueVariable; 
+  }
+
+  // Mengambil variable general (untuk passing parameter)
   getBoolVariable(String namaVariable) async {
     bool _valueVariable;
     SharedPreferences prefs = await SharedPreferences.getInstance(); 
@@ -82,6 +90,12 @@ class PreferenceUtil {
   saveVariable(String namaVariable, String valueVariable) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(namaVariable, valueVariable);
+  }
+
+  // Menyimpan variable general (untuk passing parameter)
+  saveIntVariable(String namaVariable, int valueVariable) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(namaVariable, valueVariable).then((value) => print('selected'));
   }
 
   // Menyimpan variable general (untuk passing parameter)

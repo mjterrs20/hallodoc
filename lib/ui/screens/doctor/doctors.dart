@@ -56,11 +56,21 @@ class _DoctorsState extends State<_DoctorsPageFul> {
             Consumer<DoctorProvider>(
               builder: (context, data, _) {
                 if(data.isLoading()) {
-                  return Text("loading");
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.blue,
+                      strokeWidth: 2,
+                    ),
+                  );
                 }
 
                 if(!data.doctorsExist()) {
-                  return Text("null");
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.blue,
+                      strokeWidth: 2,
+                    ),
+                  );
                 }
                 return ListView.builder(
                   itemCount: data.getDoctors().data.length,

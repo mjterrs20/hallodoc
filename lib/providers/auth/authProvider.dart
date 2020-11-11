@@ -75,7 +75,7 @@ class AuthProvider extends BaseProvider {
   }
 
   bool isLogin() {
-    return _login;
+    return _login == true;
   }
 
   void savePrefences(String token) {
