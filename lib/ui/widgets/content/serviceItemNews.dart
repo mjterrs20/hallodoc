@@ -60,7 +60,7 @@ class ServiceItemNews {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: ScreenUtil().setSp(40),
+                    fontSize: ScreenUtil().setSp(30),
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),

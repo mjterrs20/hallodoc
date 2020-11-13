@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hallodoc/models/doctor.dart';
+import 'package:hallodoc/ui/screens/doctor/doctor.dart';
 
 class DoctorCardItem extends StatelessWidget {
 
@@ -14,6 +15,10 @@ class DoctorCardItem extends StatelessWidget {
       margin: EdgeInsets.only(left: 10),
       child: GestureDetector(
         onTap: () {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => DoctorPage(id: data.id.toString()), 
+            )
+          );
         },
         child: Card(
           elevation: 2.0,

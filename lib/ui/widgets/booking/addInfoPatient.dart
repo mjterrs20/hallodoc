@@ -214,7 +214,6 @@ class _AddInfoPatien extends State<AddInfoPatiens> {
                               })
                             ).then((value) {
                               if(data.isCreated()) {
-                                print("berhasil");
                                 Navigator.pop(context);
                               }
                             });
@@ -238,7 +237,6 @@ class _AddInfoPatien extends State<AddInfoPatiens> {
 
 
   void changedDropDownItem(String status) {
-    print("Selected city $status, we are going to refresh the UI");
     setState(() {
       _status = status;
     });

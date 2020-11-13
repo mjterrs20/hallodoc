@@ -38,13 +38,11 @@ class AuthProvider extends BaseProvider {
     await AuthRepository().login(data).then((response) {
       setLoading(false);
       if (response.statusCode == 200) {
-        print(json.decode(response.data));
         setToken(Auth.fromJson(json.decode(response.data)).data.token);
         setCreated(true);
       } else {
         Map<String, dynamic> result = json.decode(response.data);
         setError(true);
-        print(json.decode(response.data));
         setMessage(result['error'].toString());
       }
     });
@@ -55,7 +53,6 @@ class AuthProvider extends BaseProvider {
     await AuthRepository().getProfile(token).then((response) {
       setLoading(false);
       if (response.statusCode == 200) {
-        print(json.decode(response.data));
         setUser(UserResponse.fromJson(json.decode(response.data)));
       } else {
         Map<String, dynamic> result = json.decode(response.data);
@@ -132,7 +129,6 @@ class AuthProvider extends BaseProvider {
   }
 
   bool isTokenExist() {
-    print('token ada');
     return _token != null && _token.isNotEmpty;
   }
 

@@ -92,8 +92,6 @@ class InfoPatientRepository {
   Future<List<InfoPatient>> getInfoPatient(id) async {
     Database db = await this.database;
     var infoPatientMapList = await db.rawQuery('SELECT * FROM info_patient where id=$id' );
-    print('ajeng $infoPatientMapList');
-    print(id);
     int count = infoPatientMapList.length;
     List<InfoPatient> infoPatientList = List<InfoPatient>();
     for (int i=0; i<count; i++) {

@@ -51,7 +51,6 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   _launchURL(urlString) async {
-    print(urlString);
     if (await canLaunch(urlString)) {
       await launch(urlString);
     } else {

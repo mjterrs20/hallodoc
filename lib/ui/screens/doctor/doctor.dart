@@ -142,7 +142,6 @@ class _DoctorState extends State<_DoctorPageFul> {
                               textColor: Colors.white,
                               child: Text('Buat Janji'),
                               onPressed: () {
-                                print(auth.isLogin());
                                 if(!auth.isLogin()) {
                                   showModalBottomSheet(
                                     context: context,
@@ -400,7 +399,6 @@ class _BottomSheeState extends State<BottomSheetLogin> {
                                       TextStyle(color: Colors.blueAccent, fontSize: 18),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      print(buildLogin);
                                       buildLogin ? changeUi(false) : changeUi(true);
                                     })
                             ])),
