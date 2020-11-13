@@ -13,7 +13,7 @@ class AuthProvider extends BaseProvider {
   UserResponse user;
   bool _created = false;
   bool _login = false;
-  String name, email, phone, deviceToken;
+  String name, email, phone;
 
   PreferenceUtil appData = PreferenceUtil();
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -63,6 +63,12 @@ class AuthProvider extends BaseProvider {
         setMessage(result['message'].toString());
       }
     });
+  }
+  // get device token
+  getDeviceToken() async{
+    String fcmToken = await _firebaseMessaging.getToken();
+    print(fcmToken);
+    return fcmToken;
   }
 
   void checkLogin() {
@@ -115,17 +121,6 @@ class AuthProvider extends BaseProvider {
 
   bool isCreated() {
     return _created;
-  }
-
-  void getDeviceToken() async {
-    _firebaseMessaging.getToken().then((value) => setDeviceToken(value));
-    notifyListeners();
-  }
-
-  void setDeviceToken(value) {
-    deviceToken = value;
-    print(deviceToken);
-    notifyListeners();
   }
 
   void setToken(value) {
