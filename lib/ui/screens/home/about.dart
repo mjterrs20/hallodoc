@@ -64,7 +64,7 @@ class _State extends State<AboutMeScreen> {
                         colorFilter: new ColorFilter.mode(
                             Colors.black.withOpacity(.3), BlendMode.srcOver),
                         image: NetworkImage(
-                          "https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg",
+                          dat.about.imageUrl
                         ),
                         fit: BoxFit.fill
                       )

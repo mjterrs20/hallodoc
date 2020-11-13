@@ -23,4 +23,9 @@ class AuthRepository {
     options.headers['Authorization'] = 'Bearer $token';
     return dio.post('/user', options: options);
   }
+
+  Future<Response> validate(String token) async {
+    options.headers['Authorization'] = 'Bearer $token';
+    return dio.post('/validate-token', options: options);
+  }
 }
