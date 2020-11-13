@@ -136,6 +136,7 @@ class _State extends State<LoginView> {
                           Provider.of<AuthProvider>(context).login(data: {
                             "email": emailController.text,
                             "password": passwordController.text,
+                            "token": "etTKRIUjSS-uNqJrQGxXoi:APA91bGfiPGKMxaevnGqF_hwHs76MOVBYcUaf9nh16VS6WwvGWEa1ZrZagX4XByDxXDPn3usCZmAwHP1v2f5Iyrssg8BjYXiQIfabV62uH-zq_6Zb_5ya0g5Iin7nJSXi0731AG4dp76"
                           }).then((value) {
                             if (data.isCreated()) {
                               Provider.of<AuthProvider>(context)

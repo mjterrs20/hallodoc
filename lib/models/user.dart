@@ -32,6 +32,7 @@ class User {
   bool isPatient;
   String sex;
   String phone;
+  dynamic imageUrl;
 
   User(
       {this.id,
@@ -45,7 +46,8 @@ class User {
       this.isDoctor,
       this.isPatient,
       this.sex,
-      this.phone});
+      this.phone, 
+      this.imageUrl});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,6 +67,7 @@ class User {
     isPatient = json['isPatient'];
     sex = json['sex'];
     phone = json['phone'];
+    imageUrl = json['image_url'];
   }
 
   Map<String, dynamic> toJson() {

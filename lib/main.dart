@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hallodoc/ui/screens/homepage_wrapper.dart';
+import 'package:hallodoc/ui/screens/splashscreen.dart';
 import 'package:intl/date_symbol_data_local.dart'; 
 import 'package:flutter/services.dart';
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         initialRoute: '/',
-        home: HomeWrapper(),
+        home: SplashApp(),
         routes: <String, WidgetBuilder>{
           // '/home': (BuildContext context) => HomePage(),
         });

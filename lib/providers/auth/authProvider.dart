@@ -12,6 +12,7 @@ class AuthProvider extends BaseProvider {
   UserResponse user;
   bool _created = false;
   bool _login = false;
+  bool _authenticated = false;
 
   String _userID;
   String _token;
@@ -62,6 +63,31 @@ class AuthProvider extends BaseProvider {
     });
   }
 
+  Future<void> validate(token) async {
+    setLoading(true);
+    await AuthRepository().validate(token).then((response) {
+      setLoading(false);
+      if (response.statusCode == 200) {
+        print(json.decode(response.data));
+        setUnauthenticated(true);
+        setMessage(json.decode(response.data)['data']);
+      } else {
+        setUnauthenticated(false);
+        print(json.decode(response.data));
+        setMessage(json.decode(response.data)['data']);
+      }
+    });
+  }
+
+  setUnauthenticated(value) {
+    _authenticated = value;
+    notifyListeners();
+  }
+
+  isAuthenticated() {
+    return _authenticated == true;
+  }
+
   void checkLogin() {
     appData.checkLogin().then((result) {
       setLogin(result);
@@ -85,7 +111,7 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
-  void checkToken() {
+  checkToken() {
     appData.getVariable("token").then((result) {
       setToken(result);
     });

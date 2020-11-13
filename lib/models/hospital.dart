@@ -65,6 +65,7 @@ class About {
   String tagline;
   String motto;
   String dateOfEstablishment;
+  dynamic imageUrl;
 
   About(
       {this.id,
@@ -72,7 +73,8 @@ class About {
       this.desc,
       this.tagline,
       this.motto,
-      this.dateOfEstablishment});
+      this.dateOfEstablishment,
+      this.imageUrl});
 
   About.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -81,6 +83,7 @@ class About {
     tagline = json['tagline'];
     motto = json['motto'];
     dateOfEstablishment = json['date_of_establishment'];
+    imageUrl = json['image_url'];
   }
 
   Map<String, dynamic> toJson() {
