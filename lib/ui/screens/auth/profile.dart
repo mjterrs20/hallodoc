@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hallodoc/providers/auth/authProvider.dart';
+import 'package:hallodoc/ui/screens/booking/history.dart';
+import 'package:hallodoc/ui/screens/doctor/doctors.dart';
+import 'package:hallodoc/ui/screens/home/about.dart';
+import 'package:hallodoc/ui/screens/home/feedback.dart';
+import 'package:hallodoc/ui/screens/service/partnerandCareer.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -254,10 +259,17 @@ class _AboutScreenState extends State<AboutScreen> {
               children: <Widget>[
                 ListTile(
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => WebViewPage(
+                        url: "https://pikobar.jabarprov.go.id/",
+                        title: "Informasi Covid-19",
+                      )
+                    )
+                  );
                 },
                 leading: Icon(FontAwesomeIcons.virus),
                 title: Text(
-                  "Infomarsi Covid-19",
+                  "Informasi Covid-19",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
@@ -271,11 +283,14 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               ListTile(
                 onTap: () {
-                  
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => BookingHistoryPage()
+                    )
+                  );
                 },
                 leading: Icon(FontAwesomeIcons.calendar),
                 title: Text(
-                  "Booking",
+                  "Histori Booking",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
@@ -289,7 +304,10 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               ListTile(
                 onTap: () {
-                  
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => DoctorsPage()
+                    )
+                  );
                 },
                 leading: Icon(CupertinoIcons.group),
                 title: Text(
@@ -307,27 +325,14 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               ListTile(
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => PartnerAndCareerPage()
+                    )
+                  );
                 },
                 leading: Icon(CupertinoIcons.bag),
                 title: Text(
                     "Partner & Career",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: 0.0,
-                  color: Colors.grey,
-                ),
-                ListTile(
-                onTap: () {
-                },
-                leading: Icon(CupertinoIcons.info),
-                title: Text(
-                    "Tentang Kami",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15.0,
@@ -355,11 +360,14 @@ class _AboutScreenState extends State<AboutScreen> {
             children: <Widget>[
               ListTile(
                 onTap: () {
-                  showAlertDialogKontakKami();
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => AboutMePage()
+                    )
+                  );
                 },
-                leading: Icon(FontAwesomeIcons.whatsapp),
+                leading: Icon(FontAwesomeIcons.info),
                 title: Text(
-                  "Kontak Kami",
+                  "Tentang Kami",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
@@ -373,6 +381,13 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               ListTile(
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => WebViewPage(
+                        url: "https://docs.google.com/forms/d/e/1FAIpQLSc_-LVjNrvbrAM-DBUKSt54iq0GF9XLPhK6INsxk0quftYDpw/viewform",
+                        title: "Feedback",
+                      )
+                    )
+                  );
                 },
                 leading: Icon(Icons.favorite_border),
                 title: Text(

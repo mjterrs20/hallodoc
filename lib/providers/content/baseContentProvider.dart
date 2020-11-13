@@ -34,6 +34,16 @@ class BaseContentProvider extends BaseProvider {
     return listData;
   }
 
+  List<Data> getFilteredContent(List<Data> data, filter) {
+    List<Data> listData = List<Data>();
+    for(int i =0; i < data.length; i ++) {
+      if(data[i].category ==  filter) {
+        listData.add(data[i]);
+      }
+    }
+    return listData;
+  }
+
   bool isExist() {
     return content != null && content.data.isNotEmpty;
   }

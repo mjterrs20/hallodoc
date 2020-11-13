@@ -11,7 +11,18 @@ class BookingRepository {
     },
   );
 
-  Future<Response> saveBooking(Map<String, dynamic> data) async {
+  Future<Response> saveBooking(Map<String, dynamic> data, token) async {
+    options.headers['Authorization'] = 'Bearer $token';
     return dio.post('/booking/create', data: data, options: options);
+  }
+
+  Future<Response> getAllBooking(token) async {
+    options.headers['Authorization'] = 'Bearer $token';
+    return dio.get('/bookings', options: options);
+  }
+
+  Future<Response> getBooking(id, token) async {
+    options.headers['Authorization'] = 'Bearer $token';
+    return dio.get('/booking/$id', options: options);
   }
 }

@@ -13,6 +13,9 @@ class AuthProvider extends BaseProvider {
   bool _created = false;
   bool _login = false;
 
+  String _userID;
+  String _token;
+
   PreferenceUtil appData = PreferenceUtil();
 
   Future<void> register({Map<String, dynamic> data}) async {
@@ -20,7 +23,7 @@ class AuthProvider extends BaseProvider {
     await AuthRepository().register(data).then((response) {
       setLoading(false);
       if (response.statusCode == 200) {
-        setToken(Auth.fromJson(json.decode(response.data)));
+        setToken(Auth.fromJson(json.decode(response.data)).data.token);
         setCreated(true);
       } else {
         Map<String, dynamic> result = json.decode(response.data);
@@ -36,7 +39,7 @@ class AuthProvider extends BaseProvider {
       setLoading(false);
       if (response.statusCode == 200) {
         print(json.decode(response.data));
-        setToken(Auth.fromJson(json.decode(response.data)));
+        setToken(Auth.fromJson(json.decode(response.data)).data.token);
         setCreated(true);
       } else {
         Map<String, dynamic> result = json.decode(response.data);
@@ -78,10 +81,33 @@ class AuthProvider extends BaseProvider {
     return _login == true;
   }
 
+  void checkUserId() {
+    appData.getVariable("id").then((result) {
+      setUserId(result);
+    });
+    notifyListeners();
+  }
+
+  void checkToken() {
+    appData.getVariable("token").then((result) {
+      setToken(result);
+    });
+    notifyListeners();
+  }
+
+  void setUserId(value) {
+    _userID = value;
+    notifyListeners();
+  }
+
+  String getUserId() {
+    return _userID;
+  }
+
   void savePrefences(String token) {
     try {
-      print(user.user.name);
       appData.saveBoolVariable("isLogin", true);
+      appData.saveVariable("id", user.user.id.toString());
       appData.saveVariable("name", user.user.name);
       appData.saveVariable("email", user.user.email);
       appData.saveVariable("token", token);
@@ -107,7 +133,7 @@ class AuthProvider extends BaseProvider {
 
   bool isTokenExist() {
     print('token ada');
-    return auth != null && auth.data.token != null;
+    return _token != null && _token.isNotEmpty;
   }
 
   bool isCreated() { 
@@ -115,12 +141,12 @@ class AuthProvider extends BaseProvider {
   }
 
   void setToken(value) {
-    auth = value;
+    _token = value;
     notifyListeners();
   }
 
   String getToken() { 
-    return auth.data.token;
+    return _token;
   }
 
   void setUser(value) {

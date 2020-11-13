@@ -38,14 +38,19 @@ class _DoctorsState extends State<_DoctorsPageFul> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(750, 1334), allowFontScaling: true);
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Booking")
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 40, left: 20, right: 10, bottom: 20),
-            child: Text("Booking",
+            padding: EdgeInsets.only(top: 20, left: 20, right: 10, bottom: 20),
+            child: Text("Buat Janji & Konsultasi Dokter",
+              maxLines: 2,
               style: TextStyle(
-                fontSize: ScreenUtil().setSp(50),
+                fontSize: ScreenUtil().setSp(30),
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
@@ -77,6 +82,7 @@ class _DoctorsState extends State<_DoctorsPageFul> {
                   itemBuilder: (context, index) {
                     Data doctor = data.getDoctors().data[index];
                     return Material(
+                      color: Colors.white,
                       child: InkWell(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hallodoc/ui/screens/homepage_wrapper.dart';
 import 'package:intl/date_symbol_data_local.dart'; 
 import 'package:flutter/services.dart';
-
-// Packages
-import 'package:hallodoc/pages/homepage_wrapper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

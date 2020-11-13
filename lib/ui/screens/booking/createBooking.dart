@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:hallodoc/models/doctor.dart';
 import 'package:hallodoc/models/infoPatient.dart';
+import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/booking/bookingProvider.dart';
 import 'package:hallodoc/providers/booking/infoPatientProvider.dart';
 import 'package:hallodoc/ui/screens/booking/infoPatientList.dart';
+import 'package:hallodoc/ui/widgets/booking/success.dart';
 import 'package:hallodoc/ui/widgets/views/circleImage.dart';
+import 'package:hallodoc/widget/miscellaneous.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CreateBookingPage extends StatelessWidget {
@@ -22,6 +26,9 @@ class CreateBookingPage extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => InfoPatientProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
         )
       ],
       child: _BookingPageFul(doctor: doctor),
@@ -46,10 +53,19 @@ class _State extends State<_BookingPageFul> {
 
   InfoPatient selected;
 
+  DateTime pickedDate;
+  TimeOfDay time;
+
   @override
   void initState() { 
     super.initState();
     getLocalData();
+    pickedDate = DateTime.now();
+    time = TimeOfDay.now();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context).checkUserId();
+      Provider.of<AuthProvider>(context).checkToken();
+    });
   }
 
   getLocalData() {
@@ -63,6 +79,58 @@ class _State extends State<_BookingPageFul> {
     });
   }
 
+  _pickDate(Data doctor) async {
+   DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year-1),
+      lastDate: DateTime(DateTime.now().year+1),
+      initialDate: pickedDate,
+    );    
+    if(date != null) {
+      if(date.day >= DateTime.now().day) {
+        setState(() {
+          pickedDate = date;
+        });
+        if(Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, doctor)) {
+          _pickTime(doctor);
+        } else {
+          showDialog("Dokter tidak ada pada hari yang dipilih");
+        }
+      } else {
+        showDialog("Silahkan pilih tanggal yang benar");
+      }
+    }
+  }
+
+  _pickTime(doctor) async {
+   TimeOfDay t = await showTimePicker(
+      context: context,
+      initialTime: time
+    );    
+    if(t != null) {
+      setState(() {
+        time = t;
+      });
+      if(!Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, doctor)) {
+        showDialog("Dokter tidak ada pada waktu yang dipilih");
+      }
+    }
+  }
+
+  showDialog(content) {
+    return HallodocWidget.hallodocDialog(
+      context: context,
+      title: "Maaf",
+      content: content,
+      buttons: <Widget>[
+        HallodocWidget.hallodocDialogButton(
+          buttonText: 'Ya',
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,29 +138,88 @@ class _State extends State<_BookingPageFul> {
         appBar: AppBar(
           title: Text("Booking Confirm"),
         ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 18.0,
-          child: Container(
-            height: 65,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: 30, right: 30, top: 10, bottom: 10),
-              child: FlatButton(
-                textColor: Colors.white,
-                child: Text('Konfirmasi'),
-                onPressed: () {
-                },
-                color: Colors.blue,
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Colors.blue,
-                        width: 1,
-                        style: BorderStyle.solid),
-                    borderRadius: BorderRadius.circular(8)
-                  ), 
-                )
+        bottomNavigationBar: Consumer<BookingProvider>(
+          builder: (context, data, _) {
+            return BottomAppBar(
+              elevation: 18.0,
+              child: Container(
+                height: 65,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: 30, right: 30, top: 10, bottom: 10),
+                  child: FlatButton(
+                    textColor: Colors.white,
+                    child: data.isLoading()
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                          strokeWidth: 2,
+                        )
+                      : Text('Konfirmasi'),
+                    onPressed: () {
+                      HallodocWidget.hallodocDialog(
+                        context: context,
+                        title: "Maaf",
+                        content: "Apakah data sudah benar?",
+                        buttons: <Widget>[
+                            HallodocWidget.hallodocDialogButton(
+                              buttonText: 'Belum',
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }
+                            ),
+                            new FlatButton(
+                              child: new Text(
+                              "Ya",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              onPressed: () async {
+                                if(
+                                    Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
+                                    && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
+                                  ) {
+                                    Provider.of<BookingProvider>(context).saveBooking(
+                                      data: {
+                                        'doctor_id': widget.doctor.id,
+                                        'hospital_id': Provider.of<BookingProvider>(context).getSelectedHospital().id,
+                                        'patient_id': Provider.of<AuthProvider>(context).getUserId(),
+                                        'booking_for': selected.status,
+                                        'message': _controller.text,
+                                        'date': "${pickedDate.year}-${pickedDate.month}-${pickedDate.day} ${time.hour}:${time.minute}",
+                                      },
+                                      token: Provider.of<AuthProvider>(context).getToken(),
+                                    ).then((value) {
+                                      if(data.isCreated()) {
+                                         Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SuccessBookingScreen(
+                                              boookingCode: data.getMessage()
+                                            ),
+                                          )
+                                        );
+                                      } else if(data.hasError()) {
+                                        showDialog(data.getMessage());
+                                      }
+                                    });
+                                }
+                                Navigator.pop(context);
+                              },
+                          ),
+                        ]);
+                    },
+                    color: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            color: Colors.blue,
+                            width: 1,
+                            style: BorderStyle.solid),
+                        borderRadius: BorderRadius.circular(8)
+                      ), 
+                    )
+                  ),
               ),
-          ),
+            );
+          },
         ),
         body: SingleChildScrollView(
           child: GestureDetector(
@@ -244,12 +371,14 @@ class _State extends State<_BookingPageFul> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: (){},
+                              onTap: (){
+                                _pickDate(widget.doctor);
+                              },
                               child: Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                                 child: RichText(
                                   text: TextSpan(
-                                    text: "Jumat, 23 Okt 2020",
+                                    text: DateFormat("EEEE, d MMM yyyy", 'id_ID').format(pickedDate ?? DateTime.now()),
                                     children: [
                                       WidgetSpan(
                                         child: Padding(
