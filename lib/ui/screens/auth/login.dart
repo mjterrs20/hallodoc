@@ -65,7 +65,6 @@ class _State extends State<_LoginPageFul> {
                               TextStyle(color: Colors.blueAccent, fontSize: 18),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              print(buildLogin);
                               buildLogin ? changeUi(false) : changeUi(true);
                             })
                     ])),

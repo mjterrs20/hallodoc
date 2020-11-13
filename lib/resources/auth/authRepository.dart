@@ -16,7 +16,6 @@ class AuthRepository {
   }
 
   Future<Response> login(Map<String, dynamic> data) async {
-    print(data);
     return dio.post('/login', data: data, options: options);
   }
 

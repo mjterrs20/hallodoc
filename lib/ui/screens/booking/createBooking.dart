@@ -111,7 +111,7 @@ class _State extends State<_BookingPageFul> {
       setState(() {
         time = t;
       });
-      if(!Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, doctor)) {
+      if(t.hour > DateTime.now().hour && !Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, doctor)) {
         showDialog("Dokter tidak ada pada waktu yang dipilih");
       }
     }
@@ -156,56 +156,68 @@ class _State extends State<_BookingPageFul> {
                         )
                       : Text('Konfirmasi'),
                     onPressed: () {
-                      HallodocWidget.hallodocDialog(
-                        context: context,
-                        title: "Maaf",
-                        content: "Apakah data sudah benar?",
-                        buttons: <Widget>[
-                            HallodocWidget.hallodocDialogButton(
-                              buttonText: 'Belum',
-                              onPressed: () {
-                                Navigator.pop(context);
-                              }
-                            ),
-                            new FlatButton(
-                              child: new Text(
-                              "Ya",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              onPressed: () async {
-                                if(
-                                    Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
-                                    && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
-                                  ) {
-                                    Provider.of<BookingProvider>(context).saveBooking(
-                                      data: {
-                                        'doctor_id': widget.doctor.id,
-                                        'hospital_id': Provider.of<BookingProvider>(context).getSelectedHospital().id,
-                                        'patient_id': Provider.of<AuthProvider>(context).getUserId(),
-                                        'booking_for': selected.status,
-                                        'message': _controller.text,
-                                        'date': "${pickedDate.year}-${pickedDate.month}-${pickedDate.day} ${time.hour}:${time.minute}",
-                                      },
-                                      token: Provider.of<AuthProvider>(context).getToken(),
-                                    ).then((value) {
-                                      if(data.isCreated()) {
-                                         Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SuccessBookingScreen(
-                                              boookingCode: data.getMessage()
-                                            ),
-                                          )
-                                        );
-                                      } else if(data.hasError()) {
-                                        showDialog(data.getMessage());
-                                      }
-                                    });
+                      if(
+                        Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
+                        && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
+                        && selected != null && time.hour > DateTime.now().hour
+                      ) {
+                        HallodocWidget.hallodocDialog(
+                          context: context,
+                          title: "Maaf",
+                          content: "Apakah data sudah benar?",
+                          buttons: <Widget>[
+                              HallodocWidget.hallodocDialogButton(
+                                buttonText: 'Belum',
+                                onPressed: () {
+                                  Navigator.pop(context);
                                 }
-                                Navigator.pop(context);
-                              },
-                          ),
-                        ]);
+                              ),
+                              new FlatButton(
+                                child: new Text(
+                                "Ya",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                onPressed: () async {
+                                  if(
+                                      Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
+                                      && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
+                                      && selected != null && _controller.text.isNotEmpty
+                                    ) {
+                                      Provider.of<BookingProvider>(context).saveBooking(
+                                        data: {
+                                          'doctor_id': widget.doctor.id,
+                                          'hospital_id': Provider.of<BookingProvider>(context).getSelectedHospital().id,
+                                          'patient_id': Provider.of<AuthProvider>(context).getUserId(),
+                                          'booking_for': selected.status,
+                                          'message': _controller.text,
+                                          'info_patient_name': selected.name,
+                                          'info_patient_status': selected.status,
+                                          'info_patient_sex': selected.sex,
+                                          'date': "${pickedDate.year}-${pickedDate.month}-${pickedDate.day} ${time.hour}:${time.minute}",
+                                        },
+                                        token: Provider.of<AuthProvider>(context).getToken(),
+                                      ).then((value) {
+                                        if(data.isCreated()) {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => SuccessBookingScreen(
+                                                boookingCode: data.getMessage()
+                                              ),
+                                            )
+                                          );
+                                        } else if(data.hasError()) {
+                                          showDialog(data.getMessage());
+                                        }
+                                      });
+                                  }
+                                  Navigator.pop(context);
+                                },
+                            ),
+                          ]);
+                      }  else {
+                        showDialog("Harap lengkapi isian anda");
+                      }
                     },
                     color: Colors.blue,
                     shape: RoundedRectangleBorder(

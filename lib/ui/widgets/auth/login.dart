@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/utils/sharedpreferences.dart';
+import 'package:hallodoc/widget/miscellaneous.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
@@ -27,6 +28,20 @@ class _State extends State<LoginView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthProvider>(context).checkLogin();
     });
+  }
+
+  showDialog(content) {
+    return HallodocWidget.hallodocDialog(
+      context: context,
+      title: "Maaf",
+      content: content,
+      buttons: <Widget>[
+        HallodocWidget.hallodocDialogButton(
+          buttonText: 'Ya',
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      ]);
   }
 
   @override
@@ -60,7 +75,6 @@ class _State extends State<LoginView> {
                       if (value == '') {
                         return 'Tidak Boleh Kosong';
                       } else if (!regex.hasMatch(value)) {
-                        print(value);
                         return 'Emalil Salah';
                       } else
                         return null;
@@ -124,7 +138,6 @@ class _State extends State<LoginView> {
                             "password": passwordController.text,
                           }).then((value) {
                             if (data.isCreated()) {
-                              print('disini anjeng');
                               Provider.of<AuthProvider>(context)
                                   .getProfile(data.getToken())
                                   .then((_) {
@@ -137,14 +150,15 @@ class _State extends State<LoginView> {
                                     Provider.of<AuthProvider>(context)
                                         .checkLogin();
                                   } else {
+                                    showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
                                     print('token ga ada');
                                   }
                                 } else {
-                                  print('i anjeng');
+                                  showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
                                 }
                               });
                             } else {
-                              print('b anjeng');
+                              showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
                             }
                           });
                         }

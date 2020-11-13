@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hallodoc/providers/auth/authProvider.dart';
+import 'package:hallodoc/widget/miscellaneous.dart';
 import 'package:provider/provider.dart';
 
 class RegisterView extends StatefulWidget {
@@ -41,6 +42,20 @@ class _State extends State<RegisterView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthProvider>(context).checkLogin();
     });
+  }
+
+  showDialog(content) {
+    return HallodocWidget.hallodocDialog(
+      context: context,
+      title: "Maaf",
+      content: content,
+      buttons: <Widget>[
+        HallodocWidget.hallodocDialogButton(
+          buttonText: 'Ya',
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      ]);
   }
 
   @override
@@ -95,7 +110,6 @@ class _State extends State<RegisterView> {
                     if (value == '') {
                       return 'Tidak Boleh Kosong';
                     } else if (!regex.hasMatch(value)) {
-                      print(value);
                       return 'Emalil Salah';
                     } else
                       return null;
@@ -284,6 +298,8 @@ class _State extends State<RegisterView> {
                                     print('berhasil get user');
                                     Provider.of<AuthProvider>(context).savePrefences(data.getToken());
                                     Provider.of<AuthProvider>(context).checkLogin();
+                                  } else {
+                                    showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
                                   }
                                 });
                               }

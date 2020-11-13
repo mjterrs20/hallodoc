@@ -41,13 +41,17 @@ class _LayananState extends State<LayananPage> {
   @override
   void initState() { 
     super.initState();
+    _getData();
+  }
+
+  Future<void> _getData() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<ContentProvider>(context, listen: false).fetchContent(query: null);
     });
   }
 
   Widget body() {
-    return ListView(
+    return  ListView(
       children: [
         divider("Fasilitas & Layanan Terkini"),
         Consumer<ContentProvider>(
@@ -157,71 +161,85 @@ class _LayananState extends State<LayananPage> {
     ScreenUtil.init(context, designSize: Size(750, 1334), allowFontScaling: true);
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 40, left: 20, right: 10),
-              child: Text("Layanan",
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(50),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            searchField(),
-            Provider.of<ContentProvider>(context).isLoading() ?
-            Container(
-              margin: EdgeInsets.only(top: 100),
+        body: RefreshIndicator(
+          onRefresh: _getData,
+          child: Provider.of<ContentProvider>(context).isLoading() ?
+          SingleChildScrollView(
+            child: Container(
+              height: ScreenUtil().screenHeight,
               child: Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.white, strokeWidth: 2,
                 )
               )
-            ) :
-            Expanded(
-              child: isSearching ? 
-                ListView(
-                  children: [
-                    Consumer<ContentProvider>(
-                      builder: (context, data, child) {
-                        if(data.isLoading()) {
-                          return Container(
-                            height: ScreenUtil().screenHeight * .5,
-                            margin: EdgeInsets.only(top: 100),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                backgroundColor: Colors.white, strokeWidth: 2,
+            ),
+          )
+          :Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 40, left: 20, right: 10),
+                child: Text("Layanan",
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(50),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              searchField(),
+              // Provider.of<ContentProvider>(context).isLoading() ?
+              // Container(
+              //   margin: EdgeInsets.only(top: 100),
+              //   child: Center(
+              //     child: CircularProgressIndicator(
+              //       backgroundColor: Colors.white, strokeWidth: 2,
+              //     )
+              //   )
+              // ) :
+              Expanded(
+                child: isSearching ? 
+                  ListView(
+                    children: [
+                      Consumer<ContentProvider>(
+                        builder: (context, data, child) {
+                          if(data.isLoading()) {
+                            return Container(
+                              height: ScreenUtil().screenHeight * .5,
+                              margin: EdgeInsets.only(top: 100),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.white, strokeWidth: 2,
+                                )
                               )
-                            )
-                          );
-                        }
+                            );
+                          }
 
-                        if(!data.isExist()) {
+                          if(!data.isExist()) {
+                            return Container(
+                              height: ScreenUtil().screenHeight * .5,
+                              margin: EdgeInsets.only(top: 100),
+                              child: Center(
+                                child: Text("Tidak ada data yang cocok"),
+                              )
+                            );
+                          }
                           return Container(
-                            height: ScreenUtil().screenHeight * .5,
-                            margin: EdgeInsets.only(top: 100),
-                            child: Center(
-                              child: Text("Tidak ada data yang cocok"),
+                            padding: EdgeInsets.only(left: 15, right: 15),
+                            child: ServiceList(
+                              canScroll: false,
+                              scrollDirection: Axis.vertical,
+                              content: data.getContent(),
+                              item: ServiceItemNews().view,
                             )
                           );
-                        }
-                        return Container(
-                          padding: EdgeInsets.only(left: 15, right: 15),
-                          child: ServiceList(
-                            canScroll: false,
-                            scrollDirection: Axis.vertical,
-                            content: data.getContent(),
-                            item: ServiceItemNews().view,
-                          )
-                        );
-                      },
-                    ),
-                  ],
-                ) : body(),
-            )
-          ],
+                        },
+                      ),
+                    ],
+                  ) : body(),
+              )
+            ],
+          ),
         )
       ),
     );
