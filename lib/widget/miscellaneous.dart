@@ -33,7 +33,7 @@ class HallodocStyle {
       fontFamily: 'Comfortaa',
       color: Color.fromRGBO(0, 0, 0, .6));
   static TextStyle alertButtonStyle = TextStyle(
-      fontSize: 14.0, fontFamily: 'Comfortaa', color: TemaApp.redColor);
+      fontSize: 14.0, fontFamily: 'Comfortaa', color: Colors.blue);
 }
 //====================[END]====================
 
@@ -98,7 +98,7 @@ class HallodocWidget {
                   width: 0,
                 ),
         ),
-        color: color != null ? color : TemaApp.redColor,
+        color: color != null ? color : Colors.blue,
         onPressed: onPressed != null ? onPressed : () {},
       ),
     );
@@ -145,7 +145,7 @@ class HallodocWidget {
             itemBuilder: (BuildContext context, int index) {
               return DecoratedBox(
                 decoration: BoxDecoration(
-                  color: index.isEven ? TemaApp.redColor : TemaApp.purpleColor,
+                  color: index.isEven ? Colors.blue : TemaApp.purpleColor,
                 ),
               );
             },
@@ -372,7 +372,7 @@ class LoadingIndicator extends StatelessWidget {
                         return DecoratedBox(
                           decoration: BoxDecoration(
                             color: index.isEven
-                                ? TemaApp.redColor
+                                ? Colors.blue
                                 : TemaApp.purpleColor,
                           ),
                         );
@@ -414,13 +414,13 @@ class LoadingIndicator extends StatelessWidget {
           ],
         ),
         child: Theme(
-          data: Theme.of(context).copyWith(accentColor: TemaApp.redColor),
+          data: Theme.of(context).copyWith(accentColor: Colors.blue),
           child: SpinKitFadingCircle(
             size: loadingSize,
             itemBuilder: (BuildContext context, int index) {
               return DecoratedBox(
                 decoration: BoxDecoration(
-                  color: index.isEven ? TemaApp.redColor : TemaApp.purpleColor,
+                  color: index.isEven ? Colors.blue : TemaApp.purpleColor,
                 ),
               );
             },

@@ -15,6 +15,7 @@ dependencies:
   flutter_screenutil: ^3.1.1
   google_maps_flutter: ^1.0.3
   carousel_slider: ^2.2.1
+  flutter_webview_plugin: ^0.3.11
 
   dio:
   provider: ^3.1.0
@@ -48,7 +49,11 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/home_ilustration.png
+    - assets/images/banner_placeholder.png
     - assets/icons/maki_doctor-11.png
+    - assets/icons/ic_kontak_darurat.png
+    - assets/icons/ic_layanan_time.png
+    - assets/icons/ic_temui_kami.png
     - assets/key/kp-likvcc-55d8760cde3e.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

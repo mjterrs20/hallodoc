@@ -22,6 +22,8 @@ class ServiceItem {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
+                colorFilter: new ColorFilter.mode(
+                    Colors.black.withOpacity(.3), BlendMode.srcOver),
                 image: NetworkImage(
                   data.imageUrl,
                 ),

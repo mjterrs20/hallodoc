@@ -1,30 +1,120 @@
-class Hospitals {
+class HospitalsResponse {
   bool success;
-  List<Hospital> data;
+  Data data;
 
-  Hospitals({this.success, this.data});
+  HospitalsResponse({this.success, this.data});
 
-  Hospitals.fromJson(Map<String, dynamic> json) {
+  HospitalsResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    if (json['data'] != null) {
-      data = new List<Hospital>();
-      json['data'].forEach((v) {
-        data.add(new Hospital.fromJson(v));
-      });
-    }
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data.toJson();
     }
     return data;
   }
 }
 
-class Hospital {
+class Data {
+  About about;
+  List<LayananDarurat> layananDarurat;
+  List<Hospitals> hospitals;
+
+  Data({this.about, this.layananDarurat, this.hospitals});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    about = json['about'] != null ? new About.fromJson(json['about']) : null;
+    if (json['layanan_darurat'] != null) {
+      layananDarurat = new List<LayananDarurat>();
+      json['layanan_darurat'].forEach((v) {
+        layananDarurat.add(new LayananDarurat.fromJson(v));
+      });
+    }
+    if (json['hospitals'] != null) {
+      hospitals = new List<Hospitals>();
+      json['hospitals'].forEach((v) {
+        hospitals.add(new Hospitals.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.about != null) {
+      data['about'] = this.about.toJson();
+    }
+    if (this.layananDarurat != null) {
+      data['layanan_darurat'] =
+          this.layananDarurat.map((v) => v.toJson()).toList();
+    }
+    if (this.hospitals != null) {
+      data['hospitals'] = this.hospitals.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class About {
+  int id;
+  String name;
+  String desc;
+  String tagline;
+  String motto;
+  String dateOfEstablishment;
+
+  About(
+      {this.id,
+      this.name,
+      this.desc,
+      this.tagline,
+      this.motto,
+      this.dateOfEstablishment});
+
+  About.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    desc = json['desc'];
+    tagline = json['tagline'];
+    motto = json['motto'];
+    dateOfEstablishment = json['date_of_establishment'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['desc'] = this.desc;
+    data['tagline'] = this.tagline;
+    data['motto'] = this.motto;
+    data['date_of_establishment'] = this.dateOfEstablishment;
+    return data;
+  }
+}
+
+class LayananDarurat {
+  String title;
+  String desc;
+
+  LayananDarurat({this.title, this.desc});
+
+  LayananDarurat.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    desc = json['desc'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['desc'] = this.desc;
+    return data;
+  }
+}
+
+class Hospitals {
   int id;
   String name;
   String email;
@@ -34,10 +124,12 @@ class Hospital {
   String lng;
   int departmentId;
   int hospitalTypeId;
+  Bpjs bpjs;
+  OpenHour openHour;
   List<Schedules> schedules;
   HospitalType hospitalType;
 
-  Hospital(
+  Hospitals(
       {this.id,
       this.name,
       this.email,
@@ -47,10 +139,12 @@ class Hospital {
       this.lng,
       this.departmentId,
       this.hospitalTypeId,
+      this.bpjs,
+      this.openHour,
       this.schedules,
       this.hospitalType});
 
-  Hospital.fromJson(Map<String, dynamic> json) {
+  Hospitals.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];
@@ -60,6 +154,10 @@ class Hospital {
     lng = json['lng'];
     departmentId = json['department_id'];
     hospitalTypeId = json['hospital_type_id'];
+    bpjs = json['bpjs'] != null ? new Bpjs.fromJson(json['bpjs']) : null;
+    openHour = json['open_hour'] != null
+        ? new OpenHour.fromJson(json['open_hour'])
+        : null;
     if (json['schedules'] != null) {
       schedules = new List<Schedules>();
       json['schedules'].forEach((v) {
@@ -82,12 +180,59 @@ class Hospital {
     data['lng'] = this.lng;
     data['department_id'] = this.departmentId;
     data['hospital_type_id'] = this.hospitalTypeId;
+    if (this.bpjs != null) {
+      data['bpjs'] = this.bpjs.toJson();
+    }
+    if (this.openHour != null) {
+      data['open_hour'] = this.openHour.toJson();
+    }
     if (this.schedules != null) {
       data['schedules'] = this.schedules.map((v) => v.toJson()).toList();
     }
     if (this.hospitalType != null) {
       data['hospital_type'] = this.hospitalType.toJson();
     }
+    return data;
+  }
+}
+
+class Bpjs {
+  String title;
+  String weekday;
+  String weekend;
+
+  Bpjs({this.title, this.weekday, this.weekend});
+
+  Bpjs.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    weekday = json['weekday'];
+    weekend = json['weekend'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['weekday'] = this.weekday;
+    data['weekend'] = this.weekend;
+    return data;
+  }
+}
+
+class OpenHour {
+  String weekday;
+  String weekend;
+
+  OpenHour({this.weekday, this.weekend});
+
+  OpenHour.fromJson(Map<String, dynamic> json) {
+    weekday = json['weekday'];
+    weekend = json['weekend'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['weekday'] = this.weekday;
+    data['weekend'] = this.weekend;
     return data;
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hallodoc/models/content.dart';
-import 'package:hallodoc/models/hospital.dart';
+import 'package:hallodoc/models/content.dart' as contentData;
+import 'package:hallodoc/models/hospital.dart' as HospitalData;
 import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/content/contentProvider.dart';
 import 'package:hallodoc/providers/doctor/doctorProvider.dart';
@@ -84,7 +84,7 @@ class _HomeState extends State<HomePageStateful> {
       scrollDirection: Axis.horizontal,
       itemCount: data.data != null ? data.data.length : 0,
       itemBuilder: (context, index) {
-        Data dat = data.data[index];
+        contentData.Data dat = data.data[index];
         return ServiceItemNews().view(context, dat);
       },
     );
@@ -167,7 +167,7 @@ class _HomeState extends State<HomePageStateful> {
                       child: Padding(
                         padding: EdgeInsets.only(left: 10),
                         child: Text(
-                          "Siap Tolong",
+                          "Halodoc",
                           style: TextStyle(
                             fontSize: 17.0,
                             color: Colors.white,
@@ -178,7 +178,7 @@ class _HomeState extends State<HomePageStateful> {
                     ),
                     IconButton(
                       onPressed: () async {},
-                      icon: Icon(Icons.favorite),
+                      icon: Icon(Icons.notifications),
                       color: Colors.white,
                     ),
                   ],
@@ -209,17 +209,10 @@ class _HomeState extends State<HomePageStateful> {
                                     child: Consumer<ContentProvider>(
                                       builder: (context, data, child) {
                                         if (data.isLoading()) {
-                                          return Container(
-                                              height:
-                                                  ScreenUtil().screenHeight *
-                                                      .5,
-                                              margin: EdgeInsets.only(top: 100),
-                                              child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                backgroundColor: Colors.white,
-                                                strokeWidth: 2,
-                                              )));
+                                          return CircularProgressIndicator(
+                                            backgroundColor: Colors.blue,
+                                            strokeWidth: 2,
+                                          );
                                         }
 
                                         if (!data.isExist()) {
@@ -253,9 +246,12 @@ class _HomeState extends State<HomePageStateful> {
                                         Consumer<ContentProvider>(
                                           builder: (context, data, child) {
                                             if (!data.isExist()) {
-                                              return Container();
+                                              return  CircularProgressIndicator(
+                                                backgroundColor: Colors.blue,
+                                                strokeWidth: 2,
+                                              );
                                             }
-                                            Content contentPromo = Content(
+                                            contentData.Content contentPromo = contentData.Content(
                                                 data: data.getPromoAndEvent(
                                                     data.getContent().data));
                                             return Padding(
@@ -280,12 +276,15 @@ class _HomeState extends State<HomePageStateful> {
                                         Consumer<HospitalProvider>(
                                           builder: (context, data, _) {
                                             if (!data.hospitalsExist()) {
-                                              return Container();
+                                              return CircularProgressIndicator(
+                                                backgroundColor: Colors.blue,
+                                                strokeWidth: 2,
+                                              );
                                             }
                                             final Map<String, Marker> _markers =
                                                 {};
                                             for (final data
-                                                in data.hospitals.data) {
+                                                in data.hospitals.data.hospitals) {
                                               final marker = Marker(
                                                 markerId: MarkerId(data.name),
                                                 position: LatLng(
@@ -319,11 +318,11 @@ class _HomeState extends State<HomePageStateful> {
                                                             target: LatLng(
                                                               double.parse(data
                                                                   .getHospitals()
-                                                                  .data[0]
+                                                                  .data.hospitals[0]
                                                                   .lat),
                                                               double.parse(data
                                                                   .getHospitals()
-                                                                  .data[0]
+                                                                  .data.hospitals[0]
                                                                   .lng),
                                                             ),
                                                             zoom: 11.0,
@@ -344,56 +343,61 @@ class _HomeState extends State<HomePageStateful> {
                                                       CrossAxisAlignment.start,
                                                   children: data
                                                       .getHospitals()
-                                                      .data
+                                                      .data.hospitals
                                                       .map((i) {
                                                     return Builder(builder:
                                                         (BuildContext context) {
-                                                      return GestureDetector(
-                                                          onTap: () {
-                                                            mapController.animateCamera(
-                                                                CameraUpdate.newCameraPosition(
-                                                                    CameraPosition(
-                                                                        target:
-                                                                            LatLng(
-                                                                          double.parse(
-                                                                              i.lat),
-                                                                          double.parse(
-                                                                              i.lng),
-                                                                        ),
-                                                                        zoom:
-                                                                            15.0)));
-                                                            // setState(() {});
-                                                          },
-                                                          child: Container(
-                                                            width: ScreenUtil()
-                                                                .screenWidth,
-                                                            color: Colors
-                                                                .transparent,
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 8),
-                                                            child: OpenHourView(
-                                                              title: i.name,
-                                                              address:
-                                                                  i.address,
-                                                              weekday: i.email,
-                                                              weekend: i.phone,
+                                                      return Column(
+                                                        children: [
+                                                          GestureDetector(
+                                                              onTap: () {
+                                                                mapController.animateCamera(
+                                                                    CameraUpdate.newCameraPosition(
+                                                                        CameraPosition(
+                                                                            target:
+                                                                                LatLng(
+                                                                              double.parse(
+                                                                                  i.lat),
+                                                                              double.parse(
+                                                                                  i.lng),
+                                                                            ),
+                                                                            zoom:
+                                                                                15.0)));
+                                                                // setState(() {});
+                                                              },
+                                                              child: Container(
+                                                                width: ScreenUtil()
+                                                                    .screenWidth,
+                                                                color: Colors
+                                                                    .transparent,
+                                                                padding:
+                                                                    EdgeInsets.only(
+                                                                        top: 8),
+                                                                child: OpenHourView(
+                                                                  title: i.name,
+                                                                  address:
+                                                                      i.address,
+                                                                  weekday: i.openHour.weekday,
+                                                                  weekend: i.openHour.weekend,
+                                                                ),
+                                                              )
                                                             ),
-                                                          ));
+                                                            i.bpjs != null ?Padding(
+                                                              padding: EdgeInsets.only(top: 8),
+                                                              child: OpenHourView(
+                                                                title: i.bpjs.title,
+                                                                address: "",
+                                                                weekday: i.bpjs.weekday,
+                                                                weekend: i.bpjs.weekend,
+                                                              )
+                                                            ) : Container(),
+                                                        ],
+                                                      );
                                                     });
                                                   }).toList(),
                                                 ));
                                           },
                                         ),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 20, top: 15),
-                                            child: OpenHourView(
-                                              title: "BPJS",
-                                              address: "",
-                                              weekday: "assa",
-                                              weekend: "asas",
-                                            )),
                                         Padding(
                                           padding: EdgeInsets.only(
                                               left: 5, right: 10, top: 20),
@@ -407,7 +411,10 @@ class _HomeState extends State<HomePageStateful> {
                                         Consumer<DoctorProvider>(
                                           builder: (context, data, child) {
                                             if (!data.doctorsExist()) {
-                                              return Container();
+                                              return CircularProgressIndicator(
+                                                backgroundColor: Colors.blue,
+                                                strokeWidth: 2,
+                                              );
                                             }
                                             return Container(
                                                 height: 320,
@@ -454,8 +461,8 @@ class _HomeState extends State<HomePageStateful> {
                                             if (!data.hospitalsExist()) {
                                               return Container();
                                             }
-                                            Hospital hospital =
-                                                data.getHospitals().data[0];
+                                            HospitalData.Hospitals hospital =
+                                                data.getHospitals().data.hospitals[0];
                                             return Container(
                                                 height: 230,
                                                 child: Column(
@@ -471,7 +478,7 @@ class _HomeState extends State<HomePageStateful> {
                                                       title: Text(
                                                         data
                                                             .getHospitals()
-                                                            .data[0]
+                                                            .data.hospitals[0]
                                                             .name,
                                                         style: TextStyle(
                                                             fontSize:

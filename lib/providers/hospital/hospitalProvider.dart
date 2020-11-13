@@ -6,15 +6,14 @@ import 'package:hallodoc/resources/hospital/hospitalRepository.dart';
 
 class HospitalProvider extends BaseProvider {
   
-  Hospitals hospitals;
-  Hospital hospital;
+  HospitalsResponse hospitals;
 
   Future<void> fetchHospitals() async {
     setLoading(true);
     await HospitalRepository().getHospitals().then((data) {
       setLoading(false);
       if (data.statusCode == 200) {
-        setHospitals(Hospitals.fromJson(json.decode(data.data)));
+        setHospitals(HospitalsResponse.fromJson(json.decode(data.data)));
       } else {
         Map<String, dynamic> result = json.decode(data.data);
         setMessage(result.toString());
@@ -27,7 +26,7 @@ class HospitalProvider extends BaseProvider {
     await HospitalRepository().getHospital(id: id).then((data) {
       setLoading(false);
       if (data.statusCode == 200) {
-        setHospitals(Hospital.fromJson(json.decode(data.data)));
+        return json.decode(data.data);
       } else {
         Map<String, dynamic> result = json.decode(data.data);
         setMessage(result.toString());
@@ -41,17 +40,8 @@ class HospitalProvider extends BaseProvider {
     notifyListeners();
   }
 
-  void setHospital(value) {
-    hospital = value;
-    notifyListeners();
-  }
-
-  Hospitals getHospitals() { 
+  HospitalsResponse getHospitals() { 
     return hospitals;
-  }
-
-  Hospital getHospital() {
-    return hospital;
   }
 
   bool hospitalsExist() {
