@@ -57,6 +57,9 @@ class _SplashState extends State<Splashscreen>
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomeWrapper()));
           });
+        } else {
+         Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeWrapper()));
         }
       });
     });
