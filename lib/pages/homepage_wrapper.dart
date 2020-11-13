@@ -7,6 +7,7 @@ import 'package:hallodoc/ui/screens/auth/gate.dart';
 import 'package:hallodoc/ui/screens/doctor/doctors.dart';
 import 'package:hallodoc/ui/screens/home/homePage.dart';
 import 'package:hallodoc/ui/screens/service/servicePage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 // Project Package
 import 'package:hallodoc/widget/miscellaneous.dart';
@@ -17,9 +18,7 @@ class HomeWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider()
-        ),
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
       ],
       child: HomePageWrapper(),
     );
@@ -32,6 +31,14 @@ class HomePageWrapper extends StatefulWidget {
 }
 
 class _HomePageWrapperState extends State<HomePageWrapper> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  void fcmSubscribe() {
+    _firebaseMessaging.subscribeToTopic('paket_umrahpendaftarans');
+  }
+
+  void fcmUnSuscribe() {
+    _firebaseMessaging.unsubscribeFromTopic('paket_umrahpendaftarans');
+  }
 
   @override
   void setState(fn) {
@@ -39,11 +46,35 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
   }
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthProvider>(context).checkLogin();
+      Provider.of<AuthProvider>(context).getDeviceToken();
     });
+    fcmSubscribe();
+    configureFCM();
+  }
+
+  configureFCM() {
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        // dijalankan ketika aplikasi dalam keadaan dibuka
+        // munculkan thawaf dialog dan langsung navigate
+        print("masuk");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        // dijalankan ketika aplikasi diminimize
+        print("masuk");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        // dijalankan ketika aplikasi sedang tidak dibuka
+        print("masuk");
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+      const IosNotificationSettings(sound: true, badge: true, alert: true),
+    );
   }
 
   Future<bool> _onWillPop() {
@@ -68,28 +99,21 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(750, 1334), allowFontScaling: true);
+    ScreenUtil.init(context,
+        designSize: Size(750, 1334), allowFontScaling: true);
     return WillPopScope(
-      onWillPop: _onWillPop,
-      child: SafeArea(
-        child: CupertinoTabScaffold(
+        onWillPop: _onWillPop,
+        child: SafeArea(
+            child: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(items: [
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-              label: 'Beranda'
-            ),
+                icon: Icon(CupertinoIcons.home), label: 'Beranda'),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.building_2_fill),
-              label: 'Layanan'
-            ),
+                icon: Icon(CupertinoIcons.building_2_fill), label: 'Layanan'),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.calendar),
-              label: 'Booking'
-            ),
+                icon: Icon(CupertinoIcons.calendar), label: 'Booking'),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.profile_circled),
-              label: 'Akun'
-            ),
+                icon: Icon(CupertinoIcons.profile_circled), label: 'Akun'),
           ]),
           tabBuilder: (context, index) {
             if (index == 0) {
@@ -111,8 +135,6 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
               // );
             }
           },
-        )
-      )
-    );
+        )));
   }
 }

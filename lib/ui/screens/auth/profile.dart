@@ -15,7 +15,6 @@ class AboutPage extends StatelessWidget {
   }
 }
 
-
 class AboutScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +23,6 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-
   int userId;
   String docId;
 
@@ -59,202 +57,211 @@ class _AboutScreenState extends State<AboutScreen> {
       context: context,
       builder: (builder) {
         return GestureDetector(
-          onTap: (){
-            _launchURL("https://wa.me/+6285720921196/?text=");
-          },
-          child: Container(
-            height: 100.0,
-            color: Color(0xFF737373),
+            onTap: () {
+              _launchURL("https://wa.me/+6285720921196/?text=");
+            },
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0),
+              height: 130.0,
+              color: Color(0xFF737373),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(10.0),
+                    topRight: const Radius.circular(10.0),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 20.0),
-                      width: 40.0,
-                      height: 5.0,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        "Kontak Kami",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(right: 3.0),
-                            child: Icon(
-                              FontAwesomeIcons.whatsapp,
-                              color: Colors.green,
-                            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 20.0),
+                        width: 40.0,
+                        height: 5.0,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              _launchURL("https://wa.me/+6285720921196/?text=");
-                            },
-                            child: Text(
-                              "+62 857 2092 1196",
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "Kontak Kami",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(right: 3.0),
+                              child: Icon(
+                                FontAwesomeIcons.whatsapp,
+                                color: Colors.green,
                               ),
                             ),
-                          )
-                        ],
+                            GestureDetector(
+                              onTap: () {
+                                _launchURL(
+                                    "https://wa.me/+6285720921196/?text=");
+                              },
+                              child: Text(
+                                "+62 857 2092 1196",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-        );
+            ));
       },
     );
   }
 
   Widget _buildListItem(BuildContext context) {
     return Container(
-      child: Column(
-        children: <Widget>[
-        Container(
-          height: 260.0,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: DecorationImage(
+        child: Column(children: <Widget>[
+      Container(
+        height: 260.0,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: DecorationImage(
               image: AssetImage('assets/images/home_ilustration.png'),
               colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(.6), BlendMode.srcOver),
-              fit: BoxFit.cover
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey[500],
-                blurRadius: 20.0,
-                spreadRadius: 1.0,
-              )
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                child: Image.asset(
-                        'assets/images/home_ilustration.png',
-                        width: 120,
-                        height: 120,
-                      ), 
-                    // FadeInImage.assetNetwork(
-                    //     fadeInCurve: Curves.linear,
-                    //     placeholder: 'assets/image/user.png',
-                    //     fit: BoxFit.cover,
-                    //     image: document['foto'],
-                    //     width: 120,
-                    //     height: 120,
-                    //   )
+                  Colors.black.withOpacity(.6), BlendMode.srcOver),
+              fit: BoxFit.cover),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[500],
+              blurRadius: 20.0,
+              spreadRadius: 1.0,
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            ClipOval(
+              child: Image.asset(
+                'assets/images/home_ilustration.png',
+                width: 120,
+                height: 120,
               ),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 40,
-                  height: 18,
-                  margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
-                  child: Center(
-                    child: Text(
-                      "Ganti",
+              // FadeInImage.assetNetwork(
+              //     fadeInCurve: Curves.linear,
+              //     placeholder: 'assets/image/user.png',
+              //     fit: BoxFit.cover,
+              //     image: document['foto'],
+              //     width: 120,
+              //     height: 120,
+              //   )
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: 40,
+                height: 18,
+                margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
+                child: Center(
+                  child: Text(
+                    "Ganti",
+                    style: TextStyle(
+                      fontSize: 10.0,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0, color: Colors.white),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 10.0, bottom: 2.0),
+              child: Consumer<AuthProvider>(
+                builder: (context, data, _) {
+                  return Text(
+                    data.getName() ?? "",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 2.0, bottom: 5.0),
+              child: Container(
+                child: Consumer<AuthProvider>(
+                  builder: (context, data, _) {
+                    return Text(
+                      data.getEmail() ?? "",
                       style: TextStyle(
-                        fontSize: 10.0,
+                        fontSize: 15.0,
                         fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w300,
                         color: Colors.white,
                       ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Container(
+              child: Consumer<AuthProvider>(
+                builder: (context, data, _) {
+                  return Text(
+                    data.getPhone() ?? "",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
                     ),
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 10.0, bottom: 2.0),
-                child: Text(
-                  "asasas",
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 2.0, bottom: 5.0),
-                child: Text(
-                  "Ucok",
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontFamily: 'Poppins',
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Container(
-                child: Text(
-                  "sasas",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w200,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                onTap: () {
+                  );
                 },
+              ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        child: Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                onTap: () {},
                 leading: Icon(FontAwesomeIcons.virus),
                 title: Text(
                   "Infomarsi Covid-19",
@@ -270,9 +277,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 color: Colors.grey,
               ),
               ListTile(
-                onTap: () {
-                  
-                },
+                onTap: () {},
                 leading: Icon(FontAwesomeIcons.calendar),
                 title: Text(
                   "Booking",
@@ -288,9 +293,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 color: Colors.grey,
               ),
               ListTile(
-                onTap: () {
-                  
-                },
+                onTap: () {},
                 leading: Icon(CupertinoIcons.group),
                 title: Text(
                   "Dokter",
@@ -306,60 +309,26 @@ class _AboutScreenState extends State<AboutScreen> {
                 color: Colors.grey,
               ),
               ListTile(
-                onTap: () {
-                },
+                onTap: () {},
                 leading: Icon(CupertinoIcons.bag),
                 title: Text(
-                    "Partner & Career",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontFamily: 'Poppins',
-                    ),
+                  "Partner & Career",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontFamily: 'Poppins',
                   ),
                 ),
-                Divider(
-                  height: 0.0,
-                  color: Colors.grey,
-                ),
-                ListTile(
-                onTap: () {
-                },
+              ),
+              Divider(
+                height: 0.0,
+                color: Colors.grey,
+              ),
+              ListTile(
+                onTap: () {},
                 leading: Icon(CupertinoIcons.info),
                 title: Text(
-                    "Tentang Kami",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: 0.0,
-                  color: Colors.grey,
-                ),
-              ],
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-          ),
-        ),
-        Container(
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                onTap: () {
-                  showAlertDialogKontakKami();
-                },
-                leading: Icon(FontAwesomeIcons.whatsapp),
-                title: Text(
-                  "Kontak Kami",
+                  "Tentang Kami",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
@@ -370,37 +339,6 @@ class _AboutScreenState extends State<AboutScreen> {
               Divider(
                 height: 0.0,
                 color: Colors.grey,
-              ),
-              ListTile(
-                onTap: () {
-                },
-                leading: Icon(Icons.favorite_border),
-                title: Text(
-                  "Feedback",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-              ),
-              Divider(
-                height: 0.0,
-                color: Colors.grey,
-              ),
-              ListTile(
-                onTap: () {
-                  _showDialogLogout(context, mainProvider);
-                },
-                leading: Icon(Icons.exit_to_app),
-                title: Text(
-                  "Logout",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
               ),
             ],
           ),
@@ -409,39 +347,98 @@ class _AboutScreenState extends State<AboutScreen> {
             borderRadius: BorderRadius.circular(5.0),
           ),
         ),
-          GestureDetector(
-            onDoubleTap: () {
-              // Navigator.of(context).pushNamed('/gamification');
-            },
-            child: Container(
-              height: 150.0,
-              child: Center(
-                child: Text(
-                  "Halodoc v1.0.0@beta",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15.0,
-                    fontFamily: 'Poppins',
-                  ),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+        ),
+      ),
+      Container(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              onTap: () {
+                showAlertDialogKontakKami();
+              },
+              leading: Icon(FontAwesomeIcons.whatsapp),
+              title: Text(
+                "Kontak Kami",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                  fontFamily: 'Poppins',
                 ),
               ),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
+            ),
+            Divider(
+              height: 0.0,
+              color: Colors.grey,
+            ),
+            ListTile(
+              onTap: () {},
+              leading: Icon(Icons.favorite_border),
+              title: Text(
+                "Feedback",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+            Divider(
+              height: 0.0,
+              color: Colors.grey,
+            ),
+            ListTile(
+              onTap: () {
+                _showDialogLogout(context, mainProvider);
+              },
+              leading: Icon(Icons.exit_to_app),
+              title: Text(
+                "Logout",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+          ],
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      ),
+      GestureDetector(
+        onDoubleTap: () {
+          // Navigator.of(context).pushNamed('/gamification');
+        },
+        child: Container(
+          height: 150.0,
+          child: Center(
+            child: Text(
+              "Halodoc v1.0.0@beta",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 15.0,
+                fontFamily: 'Poppins',
               ),
             ),
           ),
-        ]
-      )
-    );
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+          ),
+        ),
+      ),
+    ]));
   }
 
-  Widget ui() { 
+  Widget ui() {
     return Consumer<AuthProvider>(
-      builder: (context, data, _){
+      builder: (context, data, _) {
         return ListView.builder(
           itemCount: 1,
-          itemBuilder: (context, index) =>
-              _buildListItem(context),
+          itemBuilder: (context, index) => _buildListItem(context),
         );
       },
     );
@@ -449,10 +446,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: ui()
-    );
+    return Scaffold(backgroundColor: Colors.white, body: ui());
   }
 }
 
@@ -460,36 +454,35 @@ class DialogLogout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: Consumer<AuthProvider>(
-        builder: (context, data, _) {
-          return AlertDialog(
-            content: new Text("Apakah anda yakin ingin logout?"),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text(
-                  "Batal",
-                  style: TextStyle(color: Colors.black38),
+        create: (context) => AuthProvider(),
+        child: Consumer<AuthProvider>(
+          builder: (context, data, _) {
+            return AlertDialog(
+              content: new Text("Apakah anda yakin ingin logout?"),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    "Batal",
+                    style: TextStyle(color: Colors.black38),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
                 ),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-              ),
-              new FlatButton(
-                child: new Text(
-                  "Ya, Logout",
-                  style: TextStyle(color: Colors.blue),
+                new FlatButton(
+                  child: new Text(
+                    "Ya, Logout",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    Provider.of<AuthProvider>(context).logout();
+                    Provider.of<AuthProvider>(context).checkLogin();
+                  },
                 ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  Provider.of<AuthProvider>(context).logout();
-                  Provider.of<AuthProvider>(context).checkLogin();
-                },
-              ),
-            ],
-          );
-        },
-      )
-    );
+              ],
+            );
+          },
+        ));
   }
 }

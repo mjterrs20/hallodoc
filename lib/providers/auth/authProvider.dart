@@ -1,19 +1,22 @@
 import 'dart:convert';
 
+import 'package:flutter_dialogflow/flutter_dialogflow.dart';
 import 'package:hallodoc/models/auth.dart';
 import 'package:hallodoc/models/user.dart';
 import 'package:hallodoc/providers/baseProvider.dart';
 import 'package:hallodoc/resources/auth/authRepository.dart';
 import 'package:hallodoc/utils/sharedpreferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthProvider extends BaseProvider {
-
   Auth auth;
   UserResponse user;
   bool _created = false;
   bool _login = false;
+  String name, email, phone, deviceToken;
 
   PreferenceUtil appData = PreferenceUtil();
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   Future<void> register({Map<String, dynamic> data}) async {
     setLoading(true);
@@ -88,7 +91,7 @@ class AuthProvider extends BaseProvider {
       appData.saveVariable("phone", user.user.phone);
       appData.saveVariable("role", user.user.isDoctor ? 'doctor' : 'patient');
       appData.saveVariable("sex", user.user.sex);
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
     }
     notifyListeners();
@@ -110,8 +113,19 @@ class AuthProvider extends BaseProvider {
     return auth != null && auth.data.token != null;
   }
 
-  bool isCreated() { 
+  bool isCreated() {
     return _created;
+  }
+
+  void getDeviceToken() async {
+    _firebaseMessaging.getToken().then((value) => setDeviceToken(value));
+    notifyListeners();
+  }
+
+  void setDeviceToken(value) {
+    deviceToken = value;
+    print(deviceToken);
+    notifyListeners();
   }
 
   void setToken(value) {
@@ -119,7 +133,7 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
-  String getToken() { 
+  String getToken() {
     return auth.data.token;
   }
 
@@ -128,7 +142,7 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
-  User getUser() { 
+  User getUser() {
     return user.user;
   }
 
@@ -142,5 +156,26 @@ class AuthProvider extends BaseProvider {
 
   bool isDoctor() {
     return user.user.isDoctor;
+  }
+
+  String getName() {
+    appData.getVariable("name").then((result) {
+      name = result;
+    });
+    return name;
+  }
+
+  String getEmail() {
+    appData.getVariable("email").then((result) {
+      email = result;
+    });
+    return email;
+  }
+
+  String getPhone() {
+    appData.getVariable("phone").then((result) {
+      phone = result;
+    });
+    return phone;
   }
 }

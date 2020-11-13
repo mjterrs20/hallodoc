@@ -6,20 +6,20 @@ import 'package:flutter_dialogflow/dialogflow_v2.dart';
 class ChatbotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-     return ChangeNotifierProvider(
+    return ChangeNotifierProvider(
       create: (context) => ChatbotProvider(),
       child: _ChatbotPage(),
     );
   }
 }
- 
+
 class _ChatbotPage extends StatefulWidget {
   @override
   __ChatbotPageState createState() => __ChatbotPageState();
 }
 
 class __ChatbotPageState extends State<_ChatbotPage> {
-int index = 2;
+  int index = 2;
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
 
@@ -27,47 +27,46 @@ int index = 2;
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    InputDecoration.collapsed(hintText: "Butuh bantuan"),
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Consumer<ChatbotProvider>(builder: (context, data, _) {
+            return Row(children: [
+              Flexible(
+                child: TextField(
+                  controller: _textController,
+                  onSubmitted: _handleSubmitted,
+                  decoration:
+                      InputDecoration.collapsed(hintText: "Butuh bantuan"),
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () => _handleSubmitted(_textController.text)),
-            ),
-          ],
-        ),
-      ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                child: IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () => _handleSubmitted(_textController.text)),
+              ),
+            ]);
+          })),
     );
   }
 
-  void response(query) async {
-    _textController.clear();
-    AuthGoogle authGoogle =
-        await AuthGoogle(fileJson: "assets/key/kp-likvcc-55d8760cde3e.json")
-            .build();
-    Dialogflow dialogflow =
-        Dialogflow(authGoogle: authGoogle, language: Language.english);
-    AIResponse response = await dialogflow.detectIntent(query);
-    ChatMessage message = ChatMessage(
-      text: response.getMessage() ??
-          CardDialogflow(response.getListMessage()[0]).title,
-      name: "Pabanang",
-      type: false,
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
-  }
+  // void response(query) async {
+  //   _textController.clear();
+  //   AuthGoogle authGoogle =
+  //       await AuthGoogle(fileJson: "assets/key/kp-likvcc-55d8760cde3e.json")
+  //           .build();
+  //   Dialogflow dialogflow =
+  //       Dialogflow(authGoogle: authGoogle, language: Language.english);
+  //   AIResponse response = await dialogflow.detectIntent(query);
+  //   ChatMessage message = ChatMessage(
+  //     text: response.getMessage() ??
+  //         CardDialogflow(response.getListMessage()[0]).title,
+  //     name: "Pabanang",
+  //     type: false,
+  //   );
+  //   setState(() {
+  //     _messages.insert(0, message);
+  //   });
+  // }
 
   void _handleSubmitted(String text) {
     _textController.clear();
@@ -79,13 +78,15 @@ int index = 2;
     setState(() {
       _messages.insert(0, message);
     });
-    response(text);
+    Provider.of<ChatbotProvider>(context).response(text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chatbot"),),
+      appBar: AppBar(
+        title: Text("Chatbot"),
+      ),
       body: Column(children: <Widget>[
         Flexible(
             child: ListView.builder(
@@ -155,10 +156,12 @@ class ChatMessage extends StatelessWidget {
       Container(
         margin: const EdgeInsets.only(left: 16.0),
         child: CircleAvatar(
-            child: Text(
-          this.name[0],
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),backgroundColor: Colors.yellow,),
+          child: Text(
+            this.name[0],
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Colors.yellow,
+        ),
       ),
     ];
   }
