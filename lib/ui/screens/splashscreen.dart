@@ -53,7 +53,6 @@ class _SplashState extends State<Splashscreen>
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomeWrapper()));
           }).catchError((onError) {
-            Provider.of<AuthProvider>(context).logout();
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomeWrapper()));
           });
