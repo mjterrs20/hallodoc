@@ -24,6 +24,8 @@ dependencies:
   url_launcher:
   shared_preferences:
   sqflite:
+  firebase_messaging:
+  cloud_firestore: 
 
 
   image_picker:
