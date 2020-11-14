@@ -131,7 +131,7 @@ class _State extends State<RegisterView> {
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Tidak boleh kosong';
-                    } else if (value.length <= 10 || value.length >=12) {
+                    } else if (value.length < 10 || value.length > 12) {
                       return 'Nomor Hp salah';
                     }
                     return null;

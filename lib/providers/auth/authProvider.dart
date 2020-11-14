@@ -21,7 +21,7 @@ class AuthProvider extends BaseProvider {
   Map<String, dynamic> message = new Map<String, dynamic>();
 
   PreferenceUtil appData = PreferenceUtil();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging(); 
 
   Future<void> register({Map<String, dynamic> data}) async {
     setLoading(true);
@@ -83,6 +83,12 @@ class AuthProvider extends BaseProvider {
     });
   }
 
+  Future<void> deviceToken() async {
+    _firebaseMessaging.getToken().then((deviceToken) {
+      setDeviceToken(deviceToken);
+    });
+  }
+
   setUnauthenticated(value) {
     _authenticated = value;
     notifyListeners();
@@ -100,9 +106,13 @@ class AuthProvider extends BaseProvider {
   }
 
   // --- Start FCM  ---
-  getDeviceToken() async {
-    _deviceToken = _firebaseMessaging.getToken().toString();
+  String getDeviceToken() {
     return _deviceToken;
+  }
+
+  void setDeviceToken(value) {
+    _deviceToken = value;
+    notifyListeners();
   }
 
   void fcmSubscribe() {
