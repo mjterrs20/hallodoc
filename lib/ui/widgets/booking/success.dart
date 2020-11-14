@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hallodoc/ui/screens/home/homePage.dart';
+import 'package:hallodoc/ui/screens/booking/history.dart';
 
 class SuccessBookingScreen extends StatelessWidget {
 
@@ -80,10 +80,8 @@ class SuccessBookingScreen extends StatelessWidget {
                 textColor: Colors.blue,
                 child: Text('Lihat Histori'),
                 onPressed: () {
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(
-                    ),
-                  );
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => BookingHistoryPage()));
                 },
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
