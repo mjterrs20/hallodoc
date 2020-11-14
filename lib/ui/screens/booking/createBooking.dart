@@ -91,7 +91,12 @@ class _State extends State<_BookingPageFul> {
         setState(() {
           pickedDate = date;
         });
-        if(Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, doctor)) {
+        Duration dur =  pickedDate.difference(DateTime.now());
+        if(dur.inDays > 14) {
+          showDialog("Booking hanya boleh dilakukan 14 hari dari sekarang");
+        }
+
+        else if(Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, doctor)) {
           _pickTime(doctor);
         } else {
           showDialog("Dokter tidak ada pada hari yang dipilih");
@@ -111,7 +116,7 @@ class _State extends State<_BookingPageFul> {
       setState(() {
         time = t;
       });
-      if(t.hour > DateTime.now().hour && !Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, doctor)) {
+      if(!Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, doctor)) {
         showDialog("Dokter tidak ada pada waktu yang dipilih");
       }
     }
@@ -156,10 +161,12 @@ class _State extends State<_BookingPageFul> {
                         )
                       : Text('Konfirmasi'),
                     onPressed: () {
+                      print(selected);
+                      print(_controller.text.isNotEmpty);
                       if(
                         Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
                         && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
-                        && selected != null && time.hour > DateTime.now().hour
+                        && selected != null
                       ) {
                         HallodocWidget.hallodocDialog(
                           context: context,
@@ -178,6 +185,8 @@ class _State extends State<_BookingPageFul> {
                                   style: TextStyle(color: Colors.blue),
                                 ),
                                 onPressed: () async {
+                                  print(selected);
+                                  print(_controller.text.isNotEmpty);
                                   if(
                                       Provider.of<BookingProvider>(context).checkScheduleDay(pickedDate, widget.doctor)
                                       && Provider.of<BookingProvider>(context).checkScheduleTime(pickedDate, time, widget.doctor)
@@ -263,6 +272,31 @@ class _State extends State<_BookingPageFul> {
                             ),
                             Text(widget.doctor.spesialist.name)
                           ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+                              ),
+                              isScrollControlled: true,
+                              builder: (context) => Container(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: Padding(
+                                  padding: EdgeInsets.all(15),
+                                  child: BottomSheetSchedule(
+                                    doctor: widget.doctor,
+                                  ),
+                                )
+                              ),
+                            );
+                          },
+                          child: Icon(Icons.info_outline)
                         ),
                       )
                     ],
@@ -441,6 +475,95 @@ class _State extends State<_BookingPageFul> {
                 )
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BottomSheetSchedule extends StatefulWidget {
+  final Data doctor;
+
+  BottomSheetSchedule({this.doctor});
+  
+  @override
+  State<StatefulWidget> createState() {
+    return _BottomSheeState();
+  }
+}
+class _BottomSheeState extends State<BottomSheetSchedule> {
+
+  schedule(i) {
+    return Container(
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    i.day,
+                    style: TextStyle(
+                        fontSize: ScreenUtil().setSp(25),
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "${i.startAt} - ${i.endAt}",
+                    style: TextStyle(
+                        fontSize: ScreenUtil().setSp(25),
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 25),
+              child: Text(
+                i.hospital.name,
+                style: TextStyle(
+                    fontSize: ScreenUtil().setSp(20), color: Colors.grey),
+              ),
+            )
+          ]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<AuthProvider>(
+      create: (context) => AuthProvider(),
+      child: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          alignment: Alignment.bottomCenter,
+          child: Wrap(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Jadwal',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  for (var i in widget.doctor.schedules)
+                    schedule(i),
+                ],
+              )
+            ],
           ),
         ),
       ),

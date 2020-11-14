@@ -376,7 +376,7 @@ class _BottomSheeState extends State<BottomSheetLogin> {
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          'Masuk',
+                          buildLogin ?'Masuk' : "Daftar",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 20.0,

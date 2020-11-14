@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hallodoc/models/bookings.dart';
 import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/booking/bookingProvider.dart';
+import 'package:hallodoc/ui/screens/booking/bookingDetail.dart';
 import 'package:hallodoc/ui/widgets/views/circleImage.dart';
 import 'package:provider/provider.dart';
 
@@ -18,28 +19,31 @@ class BookingHistoryPage extends StatelessWidget {
           create: (_) => AuthProvider(),
         )
       ],
-      child: BookingProviderScreen(),
+      child: BookingsScreen(),
     );
   }
 }
 
-class BookingProviderScreen extends StatefulWidget {
+class BookingsScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<BookingProviderScreen> {
+class _State extends State<BookingsScreen> {
 
 
   @override
   void initState() { 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // check login
       Provider.of<AuthProvider>(context).checkLogin();
+      // cek apakah ada token
       Provider.of<AuthProvider>(context).checkToken();
       Future.delayed(Duration(microseconds: 200), () {
+        // ambil token dan gunakan untuk mengambil data
         Provider.of<BookingProvider>(context).getBookingListData(
           token: Provider.of<AuthProvider>(context).getToken()
         );
@@ -79,67 +83,73 @@ class _State extends State<BookingProviderScreen> {
                     Duration dur =  dob.difference(DateTime.now());
                     int differencehour = dur.inHours;
                     int differenceDays = dur.inDays;
-                    return Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8),
-                      width: ScreenUtil().screenWidth,
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: CircleImage(
-                              height: 60, width: 60,
-                              url: dat.doctor.imageUrl
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => BookingDetailPage(id: dat.id.toString(),)));
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.all(8),
+                        width: ScreenUtil().screenWidth,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: CircleImage(
+                                height: 60, width: 60,
+                                url: dat.doctor.imageUrl
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  dat.doctor.name,
-                                  style: TextStyle(
-                                    fontSize: ScreenUtil().setSp(27),
-                                    fontWeight: FontWeight.w700
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    dat.doctor.name,
+                                    style: TextStyle(
+                                      fontSize: ScreenUtil().setSp(27),
+                                      fontWeight: FontWeight.w700
+                                    ),
                                   ),
+                                  Text(
+                                    dat.doctor.spesialist.name,
+                                    style: TextStyle(
+                                      fontSize: ScreenUtil().setSp(20),
+                                      color: Colors.grey
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text(
+                                    dat.hospital.name,
+                                    style: TextStyle(
+                                      color: Colors.grey
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 50, left: 10),
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                decoration: BoxDecoration(
+                                  color: dat.status == "active" ? Colors.orange : dat.status == "cancel" ? Colors.red :Colors.green,
+                                  borderRadius: BorderRadius.circular(30)
                                 ),
-                                Text(
-                                  dat.doctor.spesialist.name,
+                                child: Text(
+                                  dat.status == "active" ? differencehour < 24 ? "$differencehour Jam Lagi" 
+                                  : "$differenceDays hari Lagi" : dat.status == "cancel" ? "Batal" :"Selesai",
                                   style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: ScreenUtil().setSp(20),
-                                    color: Colors.grey
                                   ),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  dat.hospital.name,
-                                  style: TextStyle(
-                                    color: Colors.grey
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 50, left: 10),
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                              decoration: BoxDecoration(
-                                color: dat.status == "active" ? Colors.orange : dat.status == "cancel" ? Colors.red :Colors.green,
-                                borderRadius: BorderRadius.circular(30)
-                              ),
-                              child: Text(
-                                dat.status == "active" ? differencehour < 24 ? "$differencehour Jam Lagi" 
-                                : "$differenceDays hari Lagi" : dat.status == "cancel" ? "Batal" :"Selesai",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: ScreenUtil().setSp(20),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

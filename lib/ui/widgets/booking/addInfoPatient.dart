@@ -205,7 +205,6 @@ class _AddInfoPatien extends State<AddInfoPatiens> {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
                           if (selectedRadioJenKel != null && _status != _statuses[0]) {
-                            widget.callback('anjeng');
                             Provider.of<InfoPatientProvider>(context).createInfoPatient(
                               InfoPatient.fromMap({
                                   "name": nameController.text,
