@@ -5,9 +5,9 @@ import 'package:hallodoc/models/user.dart';
 import 'package:hallodoc/providers/baseProvider.dart';
 import 'package:hallodoc/resources/auth/authRepository.dart';
 import 'package:hallodoc/utils/sharedpreferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthProvider extends BaseProvider {
-
   Auth auth;
   UserResponse user;
   bool _created = false;
@@ -16,8 +16,12 @@ class AuthProvider extends BaseProvider {
 
   String _userID;
   String _token;
+  String _deviceToken;
+
+  Map<String, dynamic> message = new Map<String, dynamic>();
 
   PreferenceUtil appData = PreferenceUtil();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   Future<void> register({Map<String, dynamic> data}) async {
     setLoading(true);
@@ -95,6 +99,31 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
+  // --- Start FCM  ---
+  getDeviceToken() async {
+    _deviceToken = _firebaseMessaging.getToken().toString();
+    return _deviceToken;
+  }
+
+  void fcmSubscribe() {
+    // ada event, promo, dsb, semua bisa masuk lewat sini
+    //  _firebaseMessaging.subscribeToTopic('paket_umrahpendaftarans');
+  }
+
+  void fcmUnSuscribe() {
+    //  _firebaseMessaging.unsubscribeFromTopic('paket_umrahpendaftarans');
+  }
+  void setMessageFcm(value) {
+    message = value;
+    notifyListeners();
+  }
+
+  Map getMessageFcm() {
+    return message;
+  }
+
+  // --- End FCM ---
+
   void setLogin(value) {
     _login = value;
     notifyListeners();
@@ -137,7 +166,7 @@ class AuthProvider extends BaseProvider {
       appData.saveVariable("phone", user.user.phone);
       appData.saveVariable("role", user.user.isDoctor ? 'doctor' : 'patient');
       appData.saveVariable("sex", user.user.sex);
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
     }
     notifyListeners();
@@ -158,7 +187,7 @@ class AuthProvider extends BaseProvider {
     return _token != null && _token.isNotEmpty;
   }
 
-  bool isCreated() { 
+  bool isCreated() {
     return _created;
   }
 
@@ -167,7 +196,7 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
-  String getToken() { 
+  String getToken() {
     return _token;
   }
 
@@ -176,7 +205,7 @@ class AuthProvider extends BaseProvider {
     notifyListeners();
   }
 
-  User getUser() { 
+  User getUser() {
     return user.user;
   }
 
