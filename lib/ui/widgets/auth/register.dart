@@ -84,7 +84,7 @@ class _State extends State<RegisterView> {
                       fillColor: Colors.white70),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Tidak boleh kosong';
+                      return 'Nama Tidak boleh kosong';
                     }
                     return null;
                   }
@@ -110,7 +110,7 @@ class _State extends State<RegisterView> {
                     if (value == '') {
                       return 'Tidak Boleh Kosong';
                     } else if (!regex.hasMatch(value)) {
-                      return 'Emalil Salah';
+                      return 'Format email Salah';
                     } else
                       return null;
                   },
@@ -132,7 +132,7 @@ class _State extends State<RegisterView> {
                     if (value.isEmpty) {
                       return 'Tidak boleh kosong';
                     } else if (value.length < 10 || value.length > 12) {
-                      return 'Nomor Hp salah';
+                      return 'Format Nomor Hp salah';
                     }
                     return null;
                   }
@@ -163,7 +163,7 @@ class _State extends State<RegisterView> {
                       )),
                   validator: (value) {
                     if (value.length < 6) {
-                      return '6 karakter lebih';
+                      return 'Password harus 6 karakter lebih';
                     } else if (value.toString() !=
                         cPasswordController.text) {
                       return 'Not Match';
@@ -198,10 +198,10 @@ class _State extends State<RegisterView> {
                       )),
                   validator: (value) {
                     if (value.length < 6) {
-                      return '6 karakter lebih';
+                      return 'Password 6 karakter lebih';
                     } else if (value.toString() !=
                         passwordController.text) {
-                      return 'Not Match';
+                      return 'Password Not Match';
                     }
                     return null;
                   },
@@ -288,6 +288,7 @@ class _State extends State<RegisterView> {
                                   "c_password": cPasswordController.text,
                                   "phone": phoneController.text,
                                   "sex": jenisKelamin,
+                                  "image_url": "https://www.dovercourt.org/wp-content/uploads/2019/11/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.jpg"
                               }
                             ).then((value) {
                               if(data.isCreated()) {
@@ -301,9 +302,9 @@ class _State extends State<RegisterView> {
                                   } else {
                                     showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
                                   }
-                                });
+                                }).catchError((onError) => showDialog("Terjadi kesalahan, silahkan coba lagi nanti"));
                               }
-                            });
+                             }).catchError((onError) => showDialog("Terjadi kesalahan, silahkan coba lagi nanti"));
                           }
                         } else {
                           setState(() {

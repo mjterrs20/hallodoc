@@ -73,9 +73,9 @@ class _State extends State<LoginView> {
                           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                       RegExp regex = new RegExp(pattern);
                       if (value == '') {
-                        return 'Tidak Boleh Kosong';
+                        return 'Email Tidak Boleh Kosong';
                       } else if (!regex.hasMatch(value)) {
-                        return 'Emalil Salah';
+                        return 'Email tidak sesuai format';
                       } else
                         return null;
                     },
@@ -155,13 +155,13 @@ class _State extends State<LoginView> {
                                     print('token ga ada');
                                   }
                                 } else {
-                                  showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
+                                  showDialog("Email/Password salah, silahkan coba lagi");
                                 }
                               });
                             } else {
-                              showDialog("Terjadi kesalahan, silahkan coba lagi nanti");
+                              showDialog("Email/Password salah ya, silahkan coba lagi");
                             }
-                          });
+                          }).catchError((onError) => showDialog("Terjadi kesalahan, silahkan coba lagi nanti"));
                         }
                       },
                     ),
