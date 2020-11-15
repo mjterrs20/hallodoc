@@ -9,6 +9,7 @@ import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/content/contentProvider.dart';
 import 'package:hallodoc/providers/doctor/doctorProvider.dart';
 import 'package:hallodoc/providers/hospital/hospitalProvider.dart';
+import 'package:hallodoc/providers/notification/notifProvider.dart';
 import 'package:hallodoc/ui/screens/chatbot/chatbot.dart';
 import 'package:hallodoc/ui/screens/home/about.dart';
 import 'package:hallodoc/ui/screens/notification/notif.dart';
@@ -33,6 +34,7 @@ class HomePage extends StatelessWidget {
         ChangeNotifierProvider<HospitalProvider>(
             create: (_) => HospitalProvider()),
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<NotifProvider>(create: (_) => NotifProvider()),
       ],
       child: HomePageStateful(),
     );
@@ -64,10 +66,24 @@ class _HomeState extends State<HomePageStateful> {
   @override
   void initState() {
     super.initState();
+    _getCounNotif();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<DoctorProvider>(context).fetchDoctors();
       Provider.of<ContentProvider>(context).fetchContent(query: null);
       Provider.of<HospitalProvider>(context).fetchHospitals();
+    });
+  }
+
+  _getCounNotif() async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<AuthProvider>(context).checkToken();
+      Future.delayed(Duration(milliseconds: 300), () {
+        if (Provider.of<AuthProvider>(context).getToken() != null &&
+            Provider.of<AuthProvider>(context).getToken().isNotEmpty) {
+          Provider.of<NotifProvider>(context)
+              .fetchNotif(Provider.of<AuthProvider>(context).getToken());
+        }
+      });
     });
   }
 
@@ -182,6 +198,7 @@ class _HomeState extends State<HomePageStateful> {
                           child: Text(
                             "Halodoc",
                             style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 17.0,
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -189,14 +206,42 @@ class _HomeState extends State<HomePageStateful> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Notif()));
-                        },
-                        icon: Icon(Icons.notifications),
-                        color: Colors.white,
-                      ),
+                      Consumer<NotifProvider>(builder: (context, data, _) {
+                        return Container(
+                            child: Stack(
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Notif()));
+                              },
+                              icon: Icon(Icons.notifications),
+                              color: Colors.white,
+                            ),
+                            data.getCountNotif() != null ||
+                                    data.getCountNotif() != 0
+                                ? Positioned(
+                                    top: 8,
+                                    right: 11,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      radius: 7,
+                                      child: Center(
+                                          child: Text(
+                                        data.getCountNotif().toString(),
+                                        style: TextStyle(
+                                          fontSize: 10.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      )),
+                                    ))
+                                : Container(),
+                          ],
+                        ));
+                      }),
                     ],
                   ),
                 ),
