@@ -145,13 +145,15 @@ class _State extends State<_BookingDetailScreen> {
                             Padding(
                               padding: const EdgeInsets.all(18.0),
                               child: Icon(
-                                Icons.check_circle_outline_outlined,
+                                dataBooking.data.status == "active" ? Icons.check_circle_outline_outlined :
+                                dataBooking.data.status == "cancel" ? Icons.cancel : Icons.check_circle_outline_outlined,
                                 color: Colors.white,
                                 size: 50,
                               ),
                             ),
                             Text(
-                              "Booking Confirmed",
+                              dataBooking.data.status == "active" ? "Booking Confirmed" :
+                              dataBooking.data.status == "cancel" ? "Booking Canceled" : "Booking Completed",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
