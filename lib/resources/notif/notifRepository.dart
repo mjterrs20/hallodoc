@@ -14,4 +14,13 @@ class NotifRepository {
     options.headers['Authorization'] = 'Bearer $token';
     return dio.get('/user/notifications', options: options);
   }
+
+  Future<Response> notifDetail(String token, int id) async {
+    options.headers['Authorization'] = 'Bearer $token';
+    return dio.get('/user/notifications/$id', options: options);
+  }
+  Future<Response> readNotif(String token, int id) async {
+    options.headers['Authorization'] = 'Bearer $token';
+    return dio.post('/user/notifications/$id/set-read', options: options);
+  }
 }

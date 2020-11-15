@@ -26,6 +26,7 @@ dependencies:
   sqflite:
   firebase_messaging:
   cloud_firestore: 
+  strings:
 
 
   image_picker:
