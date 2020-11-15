@@ -27,6 +27,7 @@ class _State extends State<LoginView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthProvider>(context).checkLogin();
+      Provider.of<AuthProvider>(context).deviceToken();
     });
   }
 
@@ -133,10 +134,11 @@ class _State extends State<LoginView> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
+                          String token = Provider.of<AuthProvider>(context).getDeviceToken();
                           Provider.of<AuthProvider>(context).login(data: {
                             "email": emailController.text,
                             "password": passwordController.text,
-                            "token": "etTKRIUjSS-uNqJrQGxXoi:APA91bGfiPGKMxaevnGqF_hwHs76MOVBYcUaf9nh16VS6WwvGWEa1ZrZagX4XByDxXDPn3usCZmAwHP1v2f5Iyrssg8BjYXiQIfabV62uH-zq_6Zb_5ya0g5Iin7nJSXi0731AG4dp76"
+                            "token":  token,
                           }).then((value) {
                             if (data.isCreated()) {
                               Provider.of<AuthProvider>(context)

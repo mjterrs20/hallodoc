@@ -9,8 +9,10 @@ import 'package:hallodoc/providers/auth/authProvider.dart';
 import 'package:hallodoc/providers/content/contentProvider.dart';
 import 'package:hallodoc/providers/doctor/doctorProvider.dart';
 import 'package:hallodoc/providers/hospital/hospitalProvider.dart';
+import 'package:hallodoc/providers/notification/notifProvider.dart';
 import 'package:hallodoc/ui/screens/chatbot/chatbot.dart';
 import 'package:hallodoc/ui/screens/home/about.dart';
+import 'package:hallodoc/ui/screens/notification/notif.dart';
 import 'package:hallodoc/ui/widgets/content/serviceItemNews.dart';
 import 'package:hallodoc/ui/widgets/content/serviceList.dart';
 import 'package:hallodoc/ui/widgets/doctor/doctorList.dart';
@@ -32,6 +34,7 @@ class HomePage extends StatelessWidget {
         ChangeNotifierProvider<HospitalProvider>(
             create: (_) => HospitalProvider()),
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<NotifProvider>(create: (_) => NotifProvider()),
       ],
       child: HomePageStateful(),
     );
@@ -63,10 +66,24 @@ class _HomeState extends State<HomePageStateful> {
   @override
   void initState() {
     super.initState();
+    _getCounNotif();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<DoctorProvider>(context).fetchDoctors();
       Provider.of<ContentProvider>(context).fetchContent(query: null);
       Provider.of<HospitalProvider>(context).fetchHospitals();
+    });
+  }
+
+  _getCounNotif() async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<AuthProvider>(context).checkToken();
+      Future.delayed(Duration(milliseconds: 300), () {
+        if (Provider.of<AuthProvider>(context).getToken() != null &&
+            Provider.of<AuthProvider>(context).getToken().isNotEmpty) {
+          Provider.of<NotifProvider>(context)
+              .fetchNotif(Provider.of<AuthProvider>(context).getToken());
+        }
+      });
     });
   }
 
@@ -151,7 +168,7 @@ class _HomeState extends State<HomePageStateful> {
     ScreenUtil.init(context,
         designSize: Size(750, 1334), allowFontScaling: true);
     return SafeArea(
-      child: Scaffold(
+        child: Scaffold(
       body: RefreshIndicator(
         onRefresh: _getData,
         child: Stack(
@@ -181,6 +198,7 @@ class _HomeState extends State<HomePageStateful> {
                           child: Text(
                             "Halodoc",
                             style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 17.0,
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -188,11 +206,42 @@ class _HomeState extends State<HomePageStateful> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () async {},
-                        icon: Icon(Icons.notifications),
-                        color: Colors.white,
-                      ),
+                      Consumer<NotifProvider>(builder: (context, data, _) {
+                        return Container(
+                            child: Stack(
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Notif()));
+                              },
+                              icon: Icon(Icons.notifications),
+                              color: Colors.white,
+                            ),
+                            data.getCountNotif() != null ||
+                                    data.getCountNotif() != 0
+                                ? Positioned(
+                                    top: 8,
+                                    right: 11,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      radius: 7,
+                                      child: Center(
+                                          child: Text(
+                                        data.getCountNotif().toString(),
+                                        style: TextStyle(
+                                          fontSize: 10.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      )),
+                                    ))
+                                : Container(),
+                          ],
+                        ));
+                      }),
                     ],
                   ),
                 ),
@@ -232,7 +281,8 @@ class _HomeState extends State<HomePageStateful> {
                                                 height:
                                                     ScreenUtil().screenHeight *
                                                         .5,
-                                                margin: EdgeInsets.only(top: 100),
+                                                margin:
+                                                    EdgeInsets.only(top: 100),
                                                 child: Center(
                                                   child: Text(
                                                       "Tidak ada data yang cocok"),
@@ -251,21 +301,25 @@ class _HomeState extends State<HomePageStateful> {
                                       ),
                                     )
                                   : SingleChildScrollView(
-                                      padding: EdgeInsets.fromLTRB(15, 70, 10, 0),
+                                      padding:
+                                          EdgeInsets.fromLTRB(15, 70, 10, 0),
                                       controller: scrollController,
                                       child: Column(
                                         children: <Widget>[
                                           Consumer<ContentProvider>(
                                             builder: (context, data, child) {
                                               if (!data.isExist()) {
-                                                return  CircularProgressIndicator(
+                                                return CircularProgressIndicator(
                                                   backgroundColor: Colors.blue,
                                                   strokeWidth: 2,
                                                 );
                                               }
-                                              contentData.Content contentPromo = contentData.Content(
-                                                  data: data.getPromoAndEvent(
-                                                      data.getContent().data));
+                                              contentData.Content contentPromo =
+                                                  contentData.Content(
+                                                      data: data
+                                                          .getPromoAndEvent(data
+                                                              .getContent()
+                                                              .data));
                                               return Padding(
                                                 padding: EdgeInsets.only(
                                                     left: 5, right: 10, top: 5),
@@ -291,10 +345,10 @@ class _HomeState extends State<HomePageStateful> {
                                                   strokeWidth: 2,
                                                 );
                                               }
-                                              final Map<String, Marker> _markers =
-                                                  {};
-                                              for (final data
-                                                  in data.hospitals.data.hospitals) {
+                                              final Map<String, Marker>
+                                                  _markers = {};
+                                              for (final data in data
+                                                  .hospitals.data.hospitals) {
                                                 final marker = Marker(
                                                   markerId: MarkerId(data.name),
                                                   position: LatLng(
@@ -328,11 +382,15 @@ class _HomeState extends State<HomePageStateful> {
                                                               target: LatLng(
                                                                 double.parse(data
                                                                     .getHospitals()
-                                                                    .data.hospitals[0]
+                                                                    .data
+                                                                    .hospitals[
+                                                                        0]
                                                                     .lat),
                                                                 double.parse(data
                                                                     .getHospitals()
-                                                                    .data.hospitals[0]
+                                                                    .data
+                                                                    .hospitals[
+                                                                        0]
                                                                     .lng),
                                                               ),
                                                               zoom: 11.0,
@@ -350,57 +408,76 @@ class _HomeState extends State<HomePageStateful> {
                                                       EdgeInsets.only(left: 20),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: data
                                                         .getHospitals()
-                                                        .data.hospitals
+                                                        .data
+                                                        .hospitals
                                                         .map((i) {
                                                       return Builder(builder:
-                                                          (BuildContext context) {
+                                                          (BuildContext
+                                                              context) {
                                                         return Column(
                                                           children: [
                                                             GestureDetector(
                                                                 onTap: () {
-                                                                  mapController.animateCamera(
-                                                                      CameraUpdate.newCameraPosition(
-                                                                          CameraPosition(
-                                                                              target:
-                                                                                  LatLng(
-                                                                                double.parse(
-                                                                                    i.lat),
-                                                                                double.parse(
-                                                                                    i.lng),
-                                                                              ),
-                                                                              zoom:
-                                                                                  15.0)));
+                                                                  mapController.animateCamera(CameraUpdate.newCameraPosition(
+                                                                      CameraPosition(
+                                                                          target:
+                                                                              LatLng(
+                                                                            double.parse(i.lat),
+                                                                            double.parse(i.lng),
+                                                                          ),
+                                                                          zoom:
+                                                                              15.0)));
                                                                   // setState(() {});
                                                                 },
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   width: ScreenUtil()
                                                                       .screenWidth,
                                                                   color: Colors
                                                                       .transparent,
                                                                   padding:
-                                                                      EdgeInsets.only(
-                                                                          top: 8),
-                                                                  child: OpenHourView(
-                                                                    title: i.name,
-                                                                    address:
-                                                                        i.address,
-                                                                    weekday: i.openHour.weekday,
-                                                                    weekend: i.openHour.weekend,
+                                                                      EdgeInsets
+                                                                          .only(
+                                                                              top: 8),
+                                                                  child:
+                                                                      OpenHourView(
+                                                                    title:
+                                                                        i.name,
+                                                                    address: i
+                                                                        .address,
+                                                                    weekday: i
+                                                                        .openHour
+                                                                        .weekday,
+                                                                    weekend: i
+                                                                        .openHour
+                                                                        .weekend,
                                                                   ),
-                                                                )
-                                                              ),
-                                                              i.bpjs != null ?Padding(
-                                                                padding: EdgeInsets.only(top: 8),
-                                                                child: OpenHourView(
-                                                                  title: i.bpjs.title,
-                                                                  address: "",
-                                                                  weekday: i.bpjs.weekday,
-                                                                  weekend: i.bpjs.weekend,
-                                                                )
-                                                              ) : Container(),
+                                                                )),
+                                                            i.bpjs != null
+                                                                ? Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            top:
+                                                                                8),
+                                                                    child:
+                                                                        OpenHourView(
+                                                                      title: i
+                                                                          .bpjs
+                                                                          .title,
+                                                                      address:
+                                                                          "",
+                                                                      weekday: i
+                                                                          .bpjs
+                                                                          .weekday,
+                                                                      weekend: i
+                                                                          .bpjs
+                                                                          .weekend,
+                                                                    ))
+                                                                : Container(),
                                                           ],
                                                         );
                                                       });
@@ -413,10 +490,11 @@ class _HomeState extends State<HomePageStateful> {
                                                 left: 5, right: 10, top: 20),
                                             child: CustomDivider(
                                               onTap: () {
-                                                Navigator.push(context, MaterialPageRoute(
-                                                    builder: (context) => AboutMePage()
-                                                  )
-                                                );
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AboutMePage()));
                                               },
                                               title: "Tentang Kami",
                                             ),
@@ -434,7 +512,10 @@ class _HomeState extends State<HomePageStateful> {
                                           ),
                                           Padding(
                                             padding: EdgeInsets.only(
-                                                left: 5, right: 10, top: 20, bottom: 10),
+                                                left: 5,
+                                                right: 10,
+                                                top: 20,
+                                                bottom: 10),
                                             child: CustomDivider(
                                               onTap: () => null,
                                               title: "Berita Terbaru",
@@ -458,7 +539,7 @@ class _HomeState extends State<HomePageStateful> {
                                                 top: 20,
                                                 bottom: 5),
                                             child: CustomDivider(
-                                              onTap: () => null, 
+                                              onTap: () => null,
                                               title: "Kontak Pengaduan",
                                             ),
                                           ),
@@ -468,7 +549,10 @@ class _HomeState extends State<HomePageStateful> {
                                                 return Container();
                                               }
                                               HospitalData.Hospitals hospital =
-                                                  data.getHospitals().data.hospitals[0];
+                                                  data
+                                                      .getHospitals()
+                                                      .data
+                                                      .hospitals[0];
                                               return Container(
                                                   height: 230,
                                                   child: Column(
@@ -484,12 +568,14 @@ class _HomeState extends State<HomePageStateful> {
                                                         title: Text(
                                                           data
                                                               .getHospitals()
-                                                              .data.hospitals[0]
+                                                              .data
+                                                              .hospitals[0]
                                                               .name,
                                                           style: TextStyle(
                                                               fontSize:
                                                                   ScreenUtil()
-                                                                      .setSp(30),
+                                                                      .setSp(
+                                                                          30),
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold),
@@ -517,7 +603,8 @@ class _HomeState extends State<HomePageStateful> {
                                                               "tel:${hospital.phone}");
                                                         },
                                                         leading: Icon(
-                                                            CupertinoIcons.phone),
+                                                            CupertinoIcons
+                                                                .phone),
                                                         title: Text(
                                                             hospital.phone,
                                                             style: ThemeData()
